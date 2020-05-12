@@ -174,7 +174,7 @@ public class CharacterManager : MonoBehaviour
 
     public void EquipItem(DynamicCharacterAvatar avatar, int id)
     {
-        ItemHolder item = ItemData.GetItem(id);
+        ItemTemplateHolder item = ItemData.GetItemTemplate(id);
         if (item == null || item.GetItemType() != ItemType.EQUIP)
         {
             return;
