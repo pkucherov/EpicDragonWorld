@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 
 /**
  * Author: Pantelis Andrianakis
@@ -11,7 +11,7 @@ public class CharacterSelectionInfoResult
         // Get player list size.
         int listSize = packet.ReadByte();
         // Read the data.
-        ArrayList characterList = new ArrayList(listSize);
+        List<CharacterDataHolder> characterList = new List<CharacterDataHolder>(listSize);
         for (int i = 0; i < listSize; i++)
         {
             CharacterDataHolder characterData = new CharacterDataHolder();

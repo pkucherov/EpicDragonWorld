@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,7 +28,7 @@ public class MainManager : MonoBehaviour
     [HideInInspector]
     public string accountName;
     [HideInInspector]
-    public ArrayList characterList;
+    public List<CharacterDataHolder> characterList;
     [HideInInspector]
     public CharacterDataHolder selectedCharacterData;
     [HideInInspector]
