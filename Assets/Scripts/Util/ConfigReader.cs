@@ -16,8 +16,10 @@ public class ConfigReader
     {
         try
         {
-            foreach (string line in File.ReadAllLines(fileName))
+            string[] lines = File.ReadAllLines(fileName);
+            for (int i = 0; i < lines.Length; i++)
             {
+                string line = lines[i];
                 if (!line.StartsWith("#") && line.Trim().Length > 0)
                 {
                     string[] lineSplit = line.Split('=');

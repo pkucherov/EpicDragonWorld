@@ -21,8 +21,9 @@ public class ItemData : MonoBehaviour
 
         TextAsset data = Resources.Load("data/ItemData") as TextAsset;
         string[] lines = Regex.Split(data.text, "\r\n|\n\r|\n|\r");
-        foreach (string line in lines)
+        for (int i = 0; i < lines.Length; i++)
         {
+            string line = lines[i];
             if (line.StartsWith("#"))
             {
                 continue;

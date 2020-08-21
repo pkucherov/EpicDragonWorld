@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 /**
  * Author: Pantelis Andrianakis
@@ -32,29 +33,38 @@ public class ConfigWriter
         {
             // Check for existing config.
             bool found = false;
-            string contents = "";
-            foreach (string line in File.ReadAllLines(fileName))
+            StringBuilder contents = new StringBuilder();
+            string[] lines = File.ReadAllLines(fileName);
+            for (int i = 0; i < lines.Length; i++)
             {
+                string line = lines[i];
                 if (line.StartsWith(config + "=") || line.StartsWith(config + " ="))
                 {
                     // Existing config found.
                     found = true;
-                    contents += config + " = " + value + Environment.NewLine;
+                    contents.Append(config);
+                    contents.Append(" = ");
+                    contents.Append(value);
+                    contents.Append(Environment.NewLine);
                 }
                 else
                 {
-                    contents += line + Environment.NewLine;
+                    contents.Append(line);
+                    contents.Append(Environment.NewLine);
                 }
             }
 
             // If not found create a new entry.
             if (!found)
             {
-                contents += config + " = " + value + Environment.NewLine;
+                contents.Append(config);
+                contents.Append(" = ");
+                contents.Append(value);
+                contents.Append(Environment.NewLine);
             }
 
             // Write new file contents.
-            File.WriteAllText(fileName, contents);
+            File.WriteAllText(fileName, contents.ToString());
         }
         catch (Exception)
         {
