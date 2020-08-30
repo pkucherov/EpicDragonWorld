@@ -1,23 +1,21 @@
-﻿using System.Security.Cryptography;
-
-/**
+﻿/**
  * AES Rijndael encryption.
  * Author: Pantelis Andrianakis
  * Date: December 23rd 2017
  */
 class Encryption
 {
-    private static readonly RijndaelManaged CIPHER = new RijndaelManaged();
-    private static readonly ICryptoTransform ENCRYPTOR = CIPHER.CreateEncryptor(EncryptionConfigurations.SECRET_KEYWORD, EncryptionConfigurations.PRIVATE_PASSWORD);
-    private static readonly ICryptoTransform DECRYPTOR = CIPHER.CreateDecryptor(EncryptionConfigurations.SECRET_KEYWORD, EncryptionConfigurations.PRIVATE_PASSWORD);
-
-    public static byte[] Encrypt(byte[] bytes)
+    public static byte[] Process(byte[] bytes)
     {
-        return ENCRYPTOR.TransformFinalBlock(bytes, 0, bytes.Length);
-    }
-
-    public static byte[] Decrypt(byte[] bytes)
-    {
-        return DECRYPTOR.TransformFinalBlock(bytes, 0, bytes.Length);
+        short keyCounter = 0;
+        for (short i = 0; i < bytes.Length; i++)
+        {
+            bytes[i] ^= EncryptionConfigurations.SECRET_KEYWORD[keyCounter++];
+            if (keyCounter == EncryptionConfigurations.SECRET_KEYWORD.Length)
+            {
+                keyCounter = 0;
+            }
+        }
+        return bytes;
     }
 }

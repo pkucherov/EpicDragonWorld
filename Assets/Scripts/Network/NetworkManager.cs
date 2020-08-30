@@ -105,7 +105,7 @@ public class NetworkManager
                 socket.Receive(bufferData);
 
                 // Handle packet.
-                RecievablePacketHandler.Handle(new ReceivablePacket(Encryption.Decrypt(bufferData)));
+                RecievablePacketHandler.Handle(new ReceivablePacket(Encryption.Process(bufferData))); // Decrypt
             }
         }
     }
