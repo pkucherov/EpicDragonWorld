@@ -12,7 +12,7 @@ public class ItemData : MonoBehaviour
 {
     public static ItemData Instance { get; private set; }
 
-    public GameObject[] itemPrefabs;
+    public GameObject[] _itemPrefabs;
     private static readonly Dictionary<int, ItemTemplateHolder> ITEMS = new Dictionary<int, ItemTemplateHolder>();
 
     private void Start()
@@ -61,7 +61,7 @@ public class ItemData : MonoBehaviour
             int dexterity = int.Parse(values[18]);
             int intelect = int.Parse(values[19]);
 
-			Sprite icon = null; // TODO: Resources.Load<Sprite>("ItemIcons/Equipment/" + recipeFemale.Replace("_Recipe", ""));
+            Sprite icon = null; // TODO: Resources.Load<Sprite>("ItemIcons/Equipment/" + recipeFemale.Replace("_Recipe", ""));
 
             ITEMS.Add(itemId, new ItemTemplateHolder(itemId, itemSlot, itemType, name, description, icon, recipeMale, recipeFemale, prefabId, positionMale, positionFemale, rotationMale, rotationFemale, scaleMale, scaleFemale, stackable, tradable, stamina, strength, dexterity, intelect));
         }
@@ -74,5 +74,10 @@ public class ItemData : MonoBehaviour
             return null;
         }
         return ITEMS[itemId];
+    }
+
+    public GameObject GetItemPrefab(int prefabId)
+    {
+        return _itemPrefabs[prefabId];
     }
 }

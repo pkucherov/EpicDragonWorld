@@ -9,34 +9,26 @@ public class CameraController : MonoBehaviour
 {
     public static CameraController Instance { get; private set; }
 
-    [HideInInspector]
-    public Transform target;
+    public float _targetHeight = 1.7f;
+    public float _offsetFromWall = 0.1f;
+    public float _maxDistance = 10;
+    public float _minDistance = 1;
+    public float _speedDistance = 5;
+    public float _xSpeed = 200.0f;
+    public float _ySpeed = 200.0f;
+    public float _rotationDampening = 3.0f;
+    public float _zoomDampening = 5.0f;
+    public int _yMinLimit = -40;
+    public int _yMaxLimit = 80;
+    public int _zoomRate = 40;
+    public LayerMask _collisionLayers = -1;
 
-    public float targetHeight = 1.7f;
-    public float offsetFromWall = 0.1f;
-
-    public float maxDistance = 10;
-    public float minDistance = 1;
-    public float speedDistance = 5;
-
-    public float xSpeed = 200.0f;
-    public float ySpeed = 200.0f;
-
-    public int yMinLimit = -40;
-    public int yMaxLimit = 80;
-
-    public int zoomRate = 40;
-
-    public float rotationDampening = 3.0f;
-    public float zoomDampening = 5.0f;
-
-    public LayerMask collisionLayers = -1;
-
-    private float xDeg = 0.0f;
-    private float yDeg = 0.0f;
-    private float currentDistance = 5f;
-    private float desiredDistance = 5f;
-    private float correctedDistance = 5f;
+    private Transform _target;
+    private float _xDeg = 0.0f;
+    private float _yDeg = 0.0f;
+    private float _currentDistance = 5f;
+    private float _desiredDistance = 5f;
+    private float _correctedDistance = 5f;
 
     private void Start()
     {
@@ -53,28 +45,28 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         // Don't do anything if target is not defined.
-        if (target == null)
+        if (_target == null)
         {
-            DynamicCharacterAvatar activeCharacter = WorldManager.Instance.activeCharacter;
+            DynamicCharacterAvatar activeCharacter = WorldManager.Instance.GetActiveCharacter();
             if (activeCharacter != null)
             {
                 // Now we can set target.
-                target = activeCharacter.transform;
+                _target = activeCharacter.transform;
 
                 // Bring camera behing player.
-                xDeg = target.eulerAngles.y;
-                yDeg = 10;
+                _xDeg = _target.eulerAngles.y;
+                _yDeg = 10;
             }
             return;
         }
 
         // If either mouse buttons are down, let the mouse govern camera position.
-        if (GUIUtility.hotControl == 0 && !MainManager.Instance.isDraggingWindow)
+        if (GUIUtility.hotControl == 0 && !MainManager.Instance.IsDraggingWindow())
         {
-            if (InputManager.LEFT_MOUSE_PRESS || (InputManager.RIGHT_MOUSE_PRESS && !InputManager.LEFT_PRESS && !InputManager.RIGHT_PRESS) || MovementController.rightSideMovement || MovementController.leftSideMovement)
+            if (InputManager.LEFT_MOUSE_PRESS || (InputManager.RIGHT_MOUSE_PRESS && !InputManager.LEFT_PRESS && !InputManager.RIGHT_PRESS) || MovementController.IsRightSideMovement() || MovementController.IsLeftSideMovement())
             {
-                xDeg += InputManager.AXIS_MOUSE_X * xSpeed * 0.02f;
-                yDeg -= InputManager.AXIS_MOUSE_Y * ySpeed * 0.02f;
+                _xDeg += InputManager.AXIS_MOUSE_X * _xSpeed * 0.02f;
+                _yDeg -= InputManager.AXIS_MOUSE_Y * _ySpeed * 0.02f;
 
                 if (!InputManager.LEFT_MOUSE_PRESS || InputManager.RIGHT_MOUSE_PRESS)
                 {
@@ -94,60 +86,60 @@ public class CameraController : MonoBehaviour
                 }
             }
             // Otherwise, ease behind the target if any of the directional keys are pressed and chat is not active.
-            else if (!MainManager.Instance.isChatBoxActive && (InputManager.LEFT_PRESS || InputManager.RIGHT_PRESS))
+            else if (!MainManager.Instance.IsChatBoxActive() && (InputManager.LEFT_PRESS || InputManager.RIGHT_PRESS))
             {
-                float targetRotationAngle = target.eulerAngles.y;
+                float targetRotationAngle = _target.eulerAngles.y;
                 float currentRotationAngle = transform.eulerAngles.y;
-                xDeg = Mathf.LerpAngle(currentRotationAngle, targetRotationAngle, rotationDampening * Time.deltaTime);
+                _xDeg = Mathf.LerpAngle(currentRotationAngle, targetRotationAngle, _rotationDampening * Time.deltaTime);
             }
         }
 
         // When in water, move towards camera direction, if right mouse button is pressed and player is not rotating the camera.
-        if (WorldManager.Instance.isPlayerInWater && InputManager.RIGHT_MOUSE_PRESS && (InputManager.LEFT_MOUSE_PRESS || InputManager.UP_PRESS || InputManager.DOWN_PRESS))
+        if (WorldManager.Instance.IsPlayerInWater() && InputManager.RIGHT_MOUSE_PRESS && (InputManager.LEFT_MOUSE_PRESS || InputManager.UP_PRESS || InputManager.DOWN_PRESS))
         {
-            target.position += transform.forward * Time.deltaTime;
+            _target.position += transform.forward * Time.deltaTime;
         }
 
         // Calculate the desired distance.
-        if (!MainManager.Instance.isChatBoxActive && !MainManager.Instance.isDraggingWindow) // Do not want to intervene with chat scrolling.
+        if (!MainManager.Instance.IsChatBoxActive() && !MainManager.Instance.IsDraggingWindow()) // Do not want to intervene with chat scrolling.
         {
-            desiredDistance -= InputManager.AXIS_MOUSE_SCROLLWHEEL * Time.deltaTime * zoomRate * Mathf.Abs(desiredDistance) * speedDistance;
+            _desiredDistance -= InputManager.AXIS_MOUSE_SCROLLWHEEL * Time.deltaTime * _zoomRate * Mathf.Abs(_desiredDistance) * _speedDistance;
         }
-        desiredDistance = Mathf.Clamp(desiredDistance, minDistance, maxDistance);
+        _desiredDistance = Mathf.Clamp(_desiredDistance, _minDistance, _maxDistance);
 
-        yDeg = ClampAngle(yDeg, yMinLimit, yMaxLimit);
+        _yDeg = ClampAngle(_yDeg, _yMinLimit, _yMaxLimit);
 
         // Det camera rotation.
-        Quaternion rotation = Quaternion.Euler(yDeg, xDeg, 0);
-        correctedDistance = desiredDistance;
+        Quaternion rotation = Quaternion.Euler(_yDeg, _xDeg, 0);
+        _correctedDistance = _desiredDistance;
 
         // Calculate desired camera position.
-        Vector3 vTargetOffset = new Vector3(0, -targetHeight, 0);
-        Vector3 position = target.position - (rotation * Vector3.forward * desiredDistance + vTargetOffset);
+        Vector3 vTargetOffset = new Vector3(0, -_targetHeight, 0);
+        Vector3 position = _target.position - (rotation * Vector3.forward * _desiredDistance + vTargetOffset);
 
         // Check for collision using the true target's desired registration point as set by user using height.
-        Vector3 trueTargetPosition = new Vector3(target.position.x, target.position.y, target.position.z) - vTargetOffset;
+        Vector3 trueTargetPosition = new Vector3(_target.position.x, _target.position.y, _target.position.z) - vTargetOffset;
 
         // If there was a collision, correct the camera position and calculate the corrected distance.
         bool isCorrected = false;
-        if (Physics.Linecast(trueTargetPosition, position, out RaycastHit collisionHit, collisionLayers.value))
+        if (Physics.Linecast(trueTargetPosition, position, out RaycastHit collisionHit, _collisionLayers.value))
         {
             // Calculate the distance from the original estimated position to the collision location,
             // subtracting out a safety "offset" distance from the object we hit.  The offset will help
             // keep the camera from being right on top of the surface we hit, which usually shows up as
             // the surface geometry getting partially clipped by the camera's front clipping plane.
-            correctedDistance = Vector3.Distance(trueTargetPosition, collisionHit.point) - offsetFromWall;
+            _correctedDistance = Vector3.Distance(trueTargetPosition, collisionHit.point) - _offsetFromWall;
             isCorrected = true;
         }
 
         // For smoothing, lerp distance only if either distance wasn't corrected, or correctedDistance is more than currentDistance.
-        currentDistance = !isCorrected || correctedDistance > currentDistance ? Mathf.Lerp(currentDistance, correctedDistance, Time.deltaTime * zoomDampening) : correctedDistance;
+        _currentDistance = !isCorrected || _correctedDistance > _currentDistance ? Mathf.Lerp(_currentDistance, _correctedDistance, Time.deltaTime * _zoomDampening) : _correctedDistance;
 
         // Keep within legal limits.
-        currentDistance = Mathf.Clamp(currentDistance, minDistance, maxDistance);
+        _currentDistance = Mathf.Clamp(_currentDistance, _minDistance, _maxDistance);
 
         // Recalculate position based on the new currentDistance.
-        position = target.position - (rotation * Vector3.forward * currentDistance + vTargetOffset);
+        position = _target.position - (rotation * Vector3.forward * _currentDistance + vTargetOffset);
 
         transform.rotation = rotation;
         transform.position = position;
@@ -168,11 +160,11 @@ public class CameraController : MonoBehaviour
 
     private void SetPlayerRotation(float newRotation)
     {
-        Quaternion oldHeading = target.localRotation;
-        Quaternion newHeading = target.localRotation;
+        Quaternion oldHeading = _target.localRotation;
+        Quaternion newHeading = _target.localRotation;
         Vector3 curvAngle = newHeading.eulerAngles;
         curvAngle.y = newRotation;
         newHeading.eulerAngles = curvAngle;
-        target.localRotation = Quaternion.Lerp(oldHeading, newHeading, Time.deltaTime * 10); // 10 is response time.
+        _target.localRotation = Quaternion.Lerp(oldHeading, newHeading, Time.deltaTime * 10); // 10 is response time.
     }
 }

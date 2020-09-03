@@ -10,17 +10,16 @@ public class LoginManager : MonoBehaviour
 {
     public static LoginManager Instance { get; private set; }
 
-    public Button loginButton;
-    public Button quitButton;
-    public Button optionsButton;
-    public TMP_InputField accountNameField;
-    public TMP_InputField passwordField;
-    public TextMeshProUGUI messageText;
-    public TextMeshProUGUI versionText;
+    public Button _loginButton;
+    public Button _quitButton;
+    public Button _optionsButton;
+    public TMP_InputField _accountNameField;
+    public TMP_InputField _passwordField;
+    public TextMeshProUGUI _messageText;
+    public TextMeshProUGUI _versionText;
 
-    [HideInInspector]
-    public int status;
-    private bool authenticating;
+    private int _status;
+    private bool _authenticating;
 
     private void Start()
     {
@@ -40,16 +39,16 @@ public class LoginManager : MonoBehaviour
         // If player exits to login screen, authentication must be repeated.
         NetworkManager.DisconnectFromServer();
         // In case player was forced kicked from the game.
-        if (NetworkManager.forcedDisconnection)
+        if (NetworkManager.IsForcedDisconnection())
         {
-            messageText.text = "You have been kicked from the game.";
-            NetworkManager.forcedDisconnection = false;
+            _messageText.text = "You have been kicked from the game.";
+            NetworkManager.SetForcedDisconnection(false);
         }
         // In case connection was lost.
-        if (NetworkManager.unexpectedDisconnection)
+        if (NetworkManager.IsUnexpectedDisconnection())
         {
-            messageText.text = "Could not communicate with the server.";
-            NetworkManager.unexpectedDisconnection = false;
+            _messageText.text = "Could not communicate with the server.";
+            NetworkManager.SetUnexpectedDisconnection(false);
         }
 
         // Set instance.
@@ -60,27 +59,27 @@ public class LoginManager : MonoBehaviour
         Instance = this;
 
         // Display version text.
-        versionText.text = "Version " + (VersionConfigurations.CLIENT_VERSION % 1 == 0 ? VersionConfigurations.CLIENT_VERSION + ".0" : VersionConfigurations.CLIENT_VERSION.ToString());
+        _versionText.text = "Version " + (VersionConfigurations.CLIENT_VERSION % 1 == 0 ? VersionConfigurations.CLIENT_VERSION + ".0" : VersionConfigurations.CLIENT_VERSION.ToString());
 
         // Button listeners.
-        loginButton.onClick.AddListener(OnButtonLoginClick);
-        optionsButton.onClick.AddListener(OnButtonOptionsClick);
-        quitButton.onClick.AddListener(OnButtonQuitClick);
+        _loginButton.onClick.AddListener(OnButtonLoginClick);
+        _optionsButton.onClick.AddListener(OnButtonOptionsClick);
+        _quitButton.onClick.AddListener(OnButtonQuitClick);
 
         // One time opperations.
-        if (!MainManager.Instance.hasInitialized)
+        if (!MainManager.Instance.IsInitialized())
         {
             // In case game started with command line arguments.
             // Example: EpicDragonWorld -account peter -password 12345
             string account = CommandLineArguments.Get("-account");
             if (account != null)
             {
-                accountNameField.text = account;
+                _accountNameField.text = account;
             }
             string password = CommandLineArguments.Get("-password");
             if (password != null)
             {
-                passwordField.text = password;
+                _passwordField.text = password;
             }
             // Attempt to auto connect when possible.
             if (account != null && password != null)
@@ -90,7 +89,12 @@ public class LoginManager : MonoBehaviour
         }
 
         // At this point client has initialized.
-        MainManager.Instance.hasInitialized = true;
+        MainManager.Instance.SetInitialized(true);
+    }
+
+    public void SetStatus(int value)
+    {
+        _status = value;
     }
 
     private void OnButtonLoginClick()
@@ -99,31 +103,31 @@ public class LoginManager : MonoBehaviour
         DisableButtons();
 
         // Store login information.
-        string account = accountNameField.text;
-        string password = passwordField.text;
+        string account = _accountNameField.text;
+        string password = _passwordField.text;
 
         // Input field checks.
         if (account == "")
         {
-            messageText.text = "Please enter your account name.";
+            _messageText.text = "Please enter your account name.";
             EnableButtons();
             return;
         }
         if (password == "")
         {
-            messageText.text = "Please enter your password.";
+            _messageText.text = "Please enter your password.";
             EnableButtons();
             return;
         }
         if (account.Length < 2)
         {
-            messageText.text = "Account name length is too short.";
+            _messageText.text = "Account name length is too short.";
             EnableButtons();
             return;
         }
         if (password.Length < 2)
         {
-            messageText.text = "Password length is too short.";
+            _messageText.text = "Password length is too short.";
             EnableButtons();
             return;
         }
@@ -131,73 +135,73 @@ public class LoginManager : MonoBehaviour
         // Try to connect to server.
         if (!NetworkManager.ConnectToServer())
         {
-            messageText.text = "Could not communicate with the server.";
+            _messageText.text = "Could not communicate with the server.";
             EnableButtons();
             return;
         }
 
         // Authenticate.
-        messageText.text = "Authenticating...";
-        status = -1;
+        _messageText.text = "Authenticating...";
+        _status = -1;
         NetworkManager.ChannelSend(new AccountAuthenticationRequest(account, password));
 
         // Wait for result.
-        authenticating = true;
-        while (authenticating)
+        _authenticating = true;
+        while (_authenticating)
         {
-            switch (status)
+            switch (_status)
             {
                 case 0:
-                    messageText.text = "Account does not exist.";
-                    authenticating = false;
+                    _messageText.text = "Account does not exist.";
+                    _authenticating = false;
                     break;
 
                 case 1:
-                    messageText.text = "Account is banned.";
-                    authenticating = false;
+                    _messageText.text = "Account is banned.";
+                    _authenticating = false;
                     break;
 
                 case 2:
-                    messageText.text = "Account requires activation.";
-                    authenticating = false;
+                    _messageText.text = "Account requires activation.";
+                    _authenticating = false;
                     break;
 
                 case 3:
-                    messageText.text = "Wrong password.";
-                    authenticating = false;
+                    _messageText.text = "Wrong password.";
+                    _authenticating = false;
                     break;
 
                 case 4:
-                    messageText.text = "Account is already connected.";
-                    authenticating = false;
+                    _messageText.text = "Account is already connected.";
+                    _authenticating = false;
                     break;
 
                 case 5:
-                    messageText.text = "Too many online players, please try again later.";
-                    authenticating = false;
+                    _messageText.text = "Too many online players, please try again later.";
+                    _authenticating = false;
                     break;
 
                 case 6:
-                    messageText.text = "Incorrect client version.";
-                    authenticating = false;
+                    _messageText.text = "Incorrect client version.";
+                    _authenticating = false;
                     break;
 
                 case 7:
-                    messageText.text = "Server is not available.";
-                    authenticating = false;
+                    _messageText.text = "Server is not available.";
+                    _authenticating = false;
                     break;
 
                 case 100:
-                    messageText.text = "Authenticated.";
-                    authenticating = false;
+                    _messageText.text = "Authenticated.";
+                    _authenticating = false;
                     break;
             }
         }
 
         // Go to player selection screen.
-        if (status == 100)
+        if (_status == 100)
         {
-            MainManager.Instance.accountName = account;
+            MainManager.Instance.SetAccountName(account);
             MainManager.Instance.LoadScene(MainManager.CHARACTER_SELECTION_SCENE);
         }
         else // Enable buttons.
@@ -209,17 +213,17 @@ public class LoginManager : MonoBehaviour
 
     private void DisableButtons()
     {
-        messageText.text = "Connecting..."; // Clean any old messages.
-        loginButton.enabled = false;
-        accountNameField.enabled = false;
-        passwordField.enabled = false;
+        _messageText.text = "Connecting..."; // Clean any old messages.
+        _loginButton.enabled = false;
+        _accountNameField.enabled = false;
+        _passwordField.enabled = false;
     }
 
     private void EnableButtons()
     {
-        loginButton.enabled = true;
-        accountNameField.enabled = true;
-        passwordField.enabled = true;
+        _loginButton.enabled = true;
+        _accountNameField.enabled = true;
+        _passwordField.enabled = true;
     }
 
     private void OnButtonOptionsClick()

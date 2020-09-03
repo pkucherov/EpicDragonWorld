@@ -11,7 +11,7 @@ using UnityEngine.EventSystems;
  */
 public class ImageColorPicker : MonoBehaviour, IPointerClickHandler
 {
-    public Color selectedColor;
+    public Color _selectedColor;
 
     [Serializable]
     public class ColorEvent : UnityEvent<Color> { }
@@ -19,8 +19,8 @@ public class ImageColorPicker : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        selectedColor = GetColor(GetPointerUVPosition());
-        OnColorPicked.Invoke(selectedColor);
+        _selectedColor = GetColor(GetPointerUVPosition());
+        OnColorPicked.Invoke(_selectedColor);
     }
 
     private Color GetColor(Vector2 pos)

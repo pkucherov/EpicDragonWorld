@@ -3,15 +3,15 @@ using UnityEngine.EventSystems;
 
 public class FocusPanel : MonoBehaviour, IPointerDownHandler
 {
-    private RectTransform panel;
+    private RectTransform _panel;
 
     private void Awake()
     {
-        panel = GetComponent<RectTransform>();
+        _panel = GetComponent<RectTransform>();
     }
 
     public void OnPointerDown(PointerEventData data)
     {
-        panel.SetAsLastSibling();
+        _panel.SetAsLastSibling();
     }
 }

@@ -9,16 +9,36 @@ using System.Threading;
 public class NetworkManager
 {
     // For socket read.
-    private static Thread readThread;
-    private static bool readThreadStarted = false;
+    private static Thread _readThread;
+    private static bool _readThreadStarted = false;
 
     // For socket write.
-    private static Socket socket;
-    private static bool socketConnected = false;
+    private static Socket _socket;
+    private static bool _socketConnected = false;
 
     // Send to login screen message status.
-    public static bool forcedDisconnection = false;
-    public static bool unexpectedDisconnection = false;
+    private static bool _forcedDisconnection = false;
+    private static bool _unexpectedDisconnection = false;
+
+    public static bool IsForcedDisconnection()
+    {
+        return _forcedDisconnection;
+    }
+
+    public static void SetForcedDisconnection(bool value)
+    {
+        _forcedDisconnection = value;
+    }
+
+    public static bool IsUnexpectedDisconnection()
+    {
+        return _unexpectedDisconnection;
+    }
+
+    public static void SetUnexpectedDisconnection(bool value)
+    {
+        _unexpectedDisconnection = value;
+    }
 
     private void OnApplicationQuit()
     {
@@ -27,23 +47,23 @@ public class NetworkManager
 
     public static void DisconnectFromServer()
     {
-        if (socket != null && socket.Connected)
+        if (_socket != null && _socket.Connected)
         {
-            socket.Close();
+            _socket.Close();
         }
-        socketConnected = false;
-        readThreadStarted = false;
+        _socketConnected = false;
+        _readThreadStarted = false;
 
         // Clear stored variables.
-        MainManager.Instance.accountName = null;
-        MainManager.Instance.characterList = null;
-        MainManager.Instance.selectedCharacterData = null;
+        MainManager.Instance.SetAccountName(null);
+        MainManager.Instance.SetCharacterList(null);
+        MainManager.Instance.SetSelectedCharacterData(null);
     }
 
     // Best to call this only once per login attempt.
     public static bool ConnectToServer()
     {
-        if (socketConnected = false || socket == null || !socket.Connected)
+        if (!_socketConnected || _socket == null || !_socket.Connected)
         {
             ConnectSocket();
         }
@@ -54,36 +74,36 @@ public class NetworkManager
     {
         try
         {
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IAsyncResult result = socket.BeginConnect(NetworkConfigurations.SERVER_IP, NetworkConfigurations.SERVER_PORT, null, null);
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IAsyncResult result = _socket.BeginConnect(NetworkConfigurations.SERVER_IP, NetworkConfigurations.SERVER_PORT, null, null);
             bool success = result.AsyncWaitHandle.WaitOne(NetworkConfigurations.TIMEOUT_DELAY, true);
 
             if (!success)
             {
-                socketConnected = false;
-                socket.Close();
+                _socketConnected = false;
+                _socket.Close();
             }
             else
             {
-                if (socket.Connected)
+                if (_socket.Connected)
                 {
-                    socketConnected = true;
+                    _socketConnected = true;
                     // Start Receive thread.
-                    readThreadStarted = true;
-                    readThread = new Thread(new ThreadStart(ChannelRead));
-                    readThread.Start();
+                    _readThreadStarted = true;
+                    _readThread = new Thread(new ThreadStart(ChannelRead));
+                    _readThread.Start();
                 }
                 else
                 {
-                    socketConnected = false;
-                    socket.Close();
+                    _socketConnected = false;
+                    _socket.Close();
                 }
             }
         }
         catch (SocketException)
         {
-            socketConnected = false;
-            readThreadStarted = false;
+            _socketConnected = false;
+            _readThreadStarted = false;
         }
     }
 
@@ -93,16 +113,16 @@ public class NetworkManager
         byte[] bufferData;
         short length; // Since we use short value, max length should be 32767.
 
-        while (readThreadStarted)
+        while (_readThreadStarted)
         {
-            if (socket.Receive(bufferLength) > 0)
+            if (_socket.Receive(bufferLength) > 0)
             {
                 // Get packet data length.
                 length = BitConverter.ToInt16(bufferLength, 0);
                 bufferData = new byte[length];
 
                 // Get packet data.
-                socket.Receive(bufferData);
+                _socket.Receive(bufferData);
 
                 // Handle packet.
                 RecievablePacketHandler.Handle(new ReceivablePacket(Encryption.Process(bufferData))); // Decrypt
@@ -122,7 +142,7 @@ public class NetworkManager
             
             try
             {
-                socket.SendAsync(args);
+                _socket.SendAsync(args);
             }
             catch (Exception)
             {
@@ -130,7 +150,7 @@ public class NetworkManager
         }
         else // Connection closed.
         {
-            unexpectedDisconnection = true;
+            _unexpectedDisconnection = true;
             DisconnectFromServer();
             // Clear world instance values.
             if (WorldManager.Instance != null)
@@ -145,7 +165,7 @@ public class NetworkManager
     private static bool SocketConnected()
     {
         // return !(socket.Poll(1000, SelectMode.SelectRead) && socket.Available == 0);
-        return socketConnected && socket != null && socket.Connected;
+        return _socketConnected && _socket != null && _socket.Connected;
     }
 
     // Dummy method to prevent console warning from UMA.

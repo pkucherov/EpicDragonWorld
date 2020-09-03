@@ -9,35 +9,35 @@ using UnityEngine.UI;
  */
 public class TabBetweenInputFields : MonoBehaviour
 {
-    public Selectable[] selectables;
-    public int startIndex = 0;
+    public Selectable[] _selectables;
+    public int _startIndex = 0;
 
     private void Start()
     {
-        ApplyEnterSelect(selectables[startIndex]);
+        ApplyEnterSelect(_selectables[_startIndex]);
     }
 
     private void Update()
     {
         if (InputManager.TAB_DOWN)
         {
-            startIndex++;
+            _startIndex++;
 
-            if (startIndex >= selectables.Length)
+            if (_startIndex >= _selectables.Length)
             {
-                startIndex = 0;
+                _startIndex = 0;
             }
 
-            if (selectables[startIndex] != null)
+            if (_selectables[_startIndex] != null)
             {
-                selectables[startIndex].Select();
+                _selectables[_startIndex].Select();
             }
         }
 
         if (InputManager.RETURN_DOWN)
         {
-            startIndex = 2; // Login button.
-            ApplyEnterSelect(selectables[startIndex]);
+            _startIndex = 2; // Login button.
+            ApplyEnterSelect(_selectables[_startIndex]);
         }
     }
 

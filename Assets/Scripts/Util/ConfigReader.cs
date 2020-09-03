@@ -10,7 +10,7 @@ using System.Linq;
  */
 public class ConfigReader
 {
-    private readonly Dictionary<string, string> configs = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> _configs = new Dictionary<string, string>();
 
     public ConfigReader(string fileName)
     {
@@ -25,7 +25,7 @@ public class ConfigReader
                     string[] lineSplit = line.Split('=');
                     if (lineSplit.Length > 1)
                     {
-                        configs.Add(lineSplit[0].Trim(), string.Join("=", lineSplit.Skip(1).ToArray()).Trim());
+                        _configs.Add(lineSplit[0].Trim(), string.Join("=", lineSplit.Skip(1).ToArray()).Trim());
                     }
                 }
             }
@@ -37,23 +37,23 @@ public class ConfigReader
 
     public string GetString(string config, string defaultValue)
     {
-        if (!configs.ContainsKey(config))
+        if (!_configs.ContainsKey(config))
         {
             return defaultValue;
         }
-        return configs[config];
+        return _configs[config];
     }
 
     public bool GetBool(string config, bool defaultValue)
     {
-        if (!configs.ContainsKey(config))
+        if (!_configs.ContainsKey(config))
         {
             return defaultValue;
         }
 
         try
         {
-            return bool.Parse(configs[config]);
+            return bool.Parse(_configs[config]);
         }
         catch (Exception)
         {
@@ -63,14 +63,14 @@ public class ConfigReader
 
     public int GetInt(string config, int defaultValue)
     {
-        if (!configs.ContainsKey(config))
+        if (!_configs.ContainsKey(config))
         {
             return defaultValue;
         }
 
         try
         {
-            return int.Parse(configs[config]);
+            return int.Parse(_configs[config]);
         }
         catch (Exception)
         {
@@ -80,14 +80,14 @@ public class ConfigReader
 
     public long GetLong(string config, long defaultValue)
     {
-        if (!configs.ContainsKey(config))
+        if (!_configs.ContainsKey(config))
         {
             return defaultValue;
         }
 
         try
         {
-            return long.Parse(configs[config]);
+            return long.Parse(_configs[config]);
         }
         catch (Exception)
         {
@@ -97,14 +97,14 @@ public class ConfigReader
 
     public float GetFloat(string config, float defaultValue)
     {
-        if (!configs.ContainsKey(config))
+        if (!_configs.ContainsKey(config))
         {
             return defaultValue;
         }
 
         try
         {
-            return float.Parse(configs[config], CultureInfo.InvariantCulture);
+            return float.Parse(_configs[config], CultureInfo.InvariantCulture);
         }
         catch (Exception)
         {
@@ -114,14 +114,14 @@ public class ConfigReader
 
     public double GetDouble(string config, double defaultValue)
     {
-        if (!configs.ContainsKey(config))
+        if (!_configs.ContainsKey(config))
         {
             return defaultValue;
         }
 
         try
         {
-            return double.Parse(configs[config], CultureInfo.InvariantCulture);
+            return double.Parse(_configs[config], CultureInfo.InvariantCulture);
         }
         catch (Exception)
         {

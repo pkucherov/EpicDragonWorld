@@ -15,30 +15,29 @@ public class CharacterCreationManager : MonoBehaviour
 {
     public static CharacterCreationManager Instance { get; private set; }
 
-    public Slider heightSlider;
-    public Slider bellySlider;
-    public Button zoomIn;
-    public Button zoomOut;
-    public TMP_InputField charNameField;
-    public Button createButton;
-    public Text textMessage;
-    public Button backButton;
+    public Slider _heightSlider;
+    public Slider _bellySlider;
+    public Button _zoomIn;
+    public Button _zoomOut;
+    public Button _createButton;
+    public Button _backButton;
+    public Text _textMessage;
+    public TMP_InputField _charNameField;
 
-    [HideInInspector]
-    public int creationResult;
-    private bool waitingServer;
-    private DynamicCharacterAvatar avatar;
-    private Dictionary<string, DnaSetter> dna;
-    private CharacterDataHolder dataHolder;
-    private CharacterDataHolder dataHolderMale;
-    private CharacterDataHolder dataHolderFemale;
-    private int currentHairMale = 0;
-    private int currentHairFemale = 0;
+    private int _creationResult;
+    private bool _waitingServer;
+    private DynamicCharacterAvatar _avatar;
+    private Dictionary<string, DnaSetter> _dna;
+    private CharacterDataHolder _dataHolder;
+    private CharacterDataHolder _dataHolderMale;
+    private CharacterDataHolder _dataHolderFemale;
+    private int _currentHairMale = 0;
+    private int _currentHairFemale = 0;
 
     private void Start()
     {
         // Return if account name is empty.
-        if (MainManager.Instance == null || MainManager.Instance.accountName == null)
+        if (MainManager.Instance == null || MainManager.Instance.GetAccountName() == null)
         {
             return;
         }
@@ -54,23 +53,23 @@ public class CharacterCreationManager : MonoBehaviour
         StartCoroutine(ExitToCharacterSelection());
 
         // Add button listeners.
-        zoomIn.onClick.AddListener(CameraZoomIn);
-        zoomOut.onClick.AddListener(CameraZoomOut);
-        createButton.onClick.AddListener(OnClickCreateButton);
-        backButton.onClick.AddListener(OnClickBackButton);
+        _zoomIn.onClick.AddListener(CameraZoomIn);
+        _zoomOut.onClick.AddListener(CameraZoomOut);
+        _createButton.onClick.AddListener(OnClickCreateButton);
+        _backButton.onClick.AddListener(OnClickBackButton);
 
         // Initialize character data holders.
-        dataHolderMale = new CharacterDataHolder();
-        dataHolderMale.SetRace(0);
-        dataHolderFemale = new CharacterDataHolder();
-        dataHolderFemale.SetRace(1);
-        dataHolder = dataHolderMale;
+        _dataHolderMale = new CharacterDataHolder();
+        _dataHolderMale.SetRace(0);
+        _dataHolderFemale = new CharacterDataHolder();
+        _dataHolderFemale.SetRace(1);
+        _dataHolder = _dataHolderMale;
 
         // Initial values.
-        avatar = CharacterManager.Instance.CreateCharacter(dataHolderMale, 8.28f, 0.1035156f, 20.222f, 180);
-        avatar.CharacterUpdated.AddListener(Updated);
-        heightSlider.onValueChanged.AddListener(HeightChange);
-        bellySlider.onValueChanged.AddListener(BellyChange);
+        _avatar = CharacterManager.Instance.CreateCharacter(_dataHolderMale, 8.28f, 0.1035156f, 20.222f, 180);
+        _avatar.CharacterUpdated.AddListener(Updated);
+        _heightSlider.onValueChanged.AddListener(HeightChange);
+        _bellySlider.onValueChanged.AddListener(BellyChange);
 
         // Camera position.
         Camera.main.transform.position = new Vector3(8.29f, 1.29f, 17.7f);
@@ -86,124 +85,126 @@ public class CharacterCreationManager : MonoBehaviour
 
     public void SwitchGender(bool male)
     {
-        if (male && avatar.activeRace.name != "HumanMaleDCS")
+        if (male && _avatar.activeRace.name != "HumanMaleDCS")
         {
-            dataHolder = dataHolderMale;
-            Destroy(avatar.gameObject);
-            avatar = CharacterManager.Instance.CreateCharacter(dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
+            _dataHolder = _dataHolderMale;
+            Destroy(_avatar.gameObject);
+            _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
+            _avatar.CharacterUpdated.AddListener(Updated);
         }
-        if (!male && avatar.activeRace.name != "HumanFemaleDCS")
+        if (!male && _avatar.activeRace.name != "HumanFemaleDCS")
         {
-            dataHolder = dataHolderFemale;
-            Destroy(avatar.gameObject);
-            avatar = CharacterManager.Instance.CreateCharacter(dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
+            _dataHolder = _dataHolderFemale;
+            Destroy(_avatar.gameObject);
+            _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
+            _avatar.CharacterUpdated.AddListener(Updated);
         }
     }
 
     void Updated(UMAData data)
     {
-        dna = avatar.GetDNA();
-        heightSlider.value = dna["height"].Get();
-        bellySlider.value = dna["belly"].Get();
+        _dna = _avatar.GetDNA();
+        _heightSlider.value = _dna["height"].Get();
+        _bellySlider.value = _dna["belly"].Get();
     }
 
     public void HeightChange(float val)
     {
-        dna["height"].Set(val);
-        avatar.BuildCharacter();
-        dataHolder.SetHeight(val);
+        _dna["height"].Set(val);
+        _avatar.BuildCharacter();
+        _dataHolder.SetHeight(val);
     }
 
     public void BellyChange(float val)
     {
-        dna["belly"].Set(val);
-        avatar.BuildCharacter();
-        dataHolder.SetBelly(val);
+        _dna["belly"].Set(val);
+        _avatar.BuildCharacter();
+        _dataHolder.SetBelly(val);
     }
 
     public void ChangeSkinColor(Color color)
     {
-        avatar.SetColor("Skin", color);
-        avatar.UpdateColors(true);
-        dataHolder.SetSkinColor(Util.ColorToInt(color));
+        _avatar.SetColor("Skin", color);
+        _avatar.UpdateColors(true);
+        _dataHolder.SetSkinColor(Util.ColorToInt(color));
     }
 
     public void ChangeHairColor(Color color)
     {
-        avatar.SetColor("Hair", color);
-        avatar.UpdateColors(true);
-        dataHolder.SetHairColor(Util.ColorToInt(color));
+        _avatar.SetColor("Hair", color);
+        _avatar.UpdateColors(true);
+        _dataHolder.SetHairColor(Util.ColorToInt(color));
     }
 
     public void ChangeEyesColor(Color color)
     {
-        avatar.SetColor("Eyes", color);
-        avatar.UpdateColors(true);
-        dataHolder.SetEyeColor(Util.ColorToInt(color));
+        _avatar.SetColor("Eyes", color);
+        _avatar.UpdateColors(true);
+        _dataHolder.SetEyeColor(Util.ColorToInt(color));
     }
 
     public void ChangeHair(bool plus)
     {
-        if (avatar.activeRace.name == "HumanMaleDCS")
+        if (_avatar.activeRace.name == "HumanMaleDCS")
         {
             if (plus)
             {
-                currentHairMale++;
+                _currentHairMale++;
             }
             else
             {
-                currentHairMale--;
+                _currentHairMale--;
             }
 
-            currentHairMale = Mathf.Clamp(currentHairMale, 0, CharacterManager.Instance.hairModelsMale.Count - 1);
+            _currentHairMale = Mathf.Clamp(_currentHairMale, 0, CharacterManager.Instance.GetHairModelsMale().Count - 1);
 
-            if (CharacterManager.Instance.hairModelsMale[currentHairMale] == "None")
+            if (CharacterManager.Instance.GetHairModelsMale()[_currentHairMale] == "None")
             {
-                avatar.ClearSlot("Hair");
+                _avatar.ClearSlot("Hair");
             }
             else
             {
-                avatar.SetSlot("Hair", CharacterManager.Instance.hairModelsMale[currentHairMale]);
+                _avatar.SetSlot("Hair", CharacterManager.Instance.GetHairModelsMale()[_currentHairMale]);
             }
 
-            dataHolder.SetHairType(currentHairMale);
+            _dataHolder.SetHairType(_currentHairMale);
         }
 
-        if (avatar.activeRace.name == "HumanFemaleDCS")
+        if (_avatar.activeRace.name == "HumanFemaleDCS")
         {
             if (plus)
             {
-                currentHairFemale++;
+                _currentHairFemale++;
             }
             else
             {
-                currentHairFemale--;
+                _currentHairFemale--;
             }
 
-            currentHairFemale = Mathf.Clamp(currentHairFemale, 0, CharacterManager.Instance.hairModelsFemale.Count - 1);
+            _currentHairFemale = Mathf.Clamp(_currentHairFemale, 0, CharacterManager.Instance.GetHairModelsFemale().Count - 1);
 
-            if (CharacterManager.Instance.hairModelsFemale[currentHairFemale] == "None")
+            if (CharacterManager.Instance.GetHairModelsFemale()[_currentHairFemale] == "None")
             {
-                avatar.ClearSlot("Hair");
+                _avatar.ClearSlot("Hair");
             }
             else
             {
-                avatar.SetSlot("Hair", CharacterManager.Instance.hairModelsFemale[currentHairFemale]);
+                _avatar.SetSlot("Hair", CharacterManager.Instance.GetHairModelsFemale()[_currentHairFemale]);
             }
 
-            dataHolder.SetHairType(currentHairFemale);
+            _dataHolder.SetHairType(_currentHairFemale);
         }
 
-        avatar.BuildCharacter();
+        _avatar.BuildCharacter();
     }
 
     public void CameraZoomIn()
     {
-        if (avatar.activeRace.name == "HumanMaleDCS")
+        if (_avatar.activeRace.name == "HumanMaleDCS")
         {
             StartCoroutine(LerpFromTo(Camera.main.transform.position, new Vector3(8.3f, 1.568f, 19.491f), 1f));
         }
-        if (avatar.activeRace.name == "HumanFemaleDCS")
+        if (_avatar.activeRace.name == "HumanFemaleDCS")
         {
             StartCoroutine(LerpFromTo(Camera.main.transform.position, new Vector3(8.3f, 1.472f, 19.48f), 1f));
         }
@@ -226,9 +227,9 @@ public class CharacterCreationManager : MonoBehaviour
 
     private void OnClickBackButton()
     {
-        if (avatar != null)
+        if (_avatar != null)
         {
-            Destroy(avatar.gameObject);
+            Destroy(_avatar.gameObject);
         }
         MainManager.Instance.LoadScene(MainManager.CHARACTER_SELECTION_SCENE);
     }
@@ -245,63 +246,63 @@ public class CharacterCreationManager : MonoBehaviour
         DisableButtons();
 
         // Store creation information.
-        string name = charNameField.text;
+        string name = _charNameField.text;
 
         // No name entered.
         if (name == "")
         {
-            textMessage.text = "Please enter a name.";
+            _textMessage.text = "Please enter a name.";
             EnableButtons();
             return;
         }
 
         // Set name
-        dataHolder.SetName(name);
+        _dataHolder.SetName(name);
 
         // Request character creation.
-        NetworkManager.ChannelSend(new CharacterCreationRequest(dataHolder));
+        NetworkManager.ChannelSend(new CharacterCreationRequest(_dataHolder));
 
         // Wait until server sends creation result.
-        waitingServer = true;
-        creationResult = -1;
-        while (waitingServer)
+        _waitingServer = true;
+        _creationResult = -1;
+        while (_waitingServer)
         {
-            switch (creationResult)
+            switch (_creationResult)
             {
                 case 0:
-                    textMessage.text = "Invalid name.";
-                    waitingServer = false;
+                    _textMessage.text = "Invalid name.";
+                    _waitingServer = false;
                     break;
 
                 case 1:
-                    textMessage.text = "Name is too short.";
-                    waitingServer = false;
+                    _textMessage.text = "Name is too short.";
+                    _waitingServer = false;
                     break;
 
                 case 2:
-                    textMessage.text = "Name already exists.";
-                    waitingServer = false;
+                    _textMessage.text = "Name already exists.";
+                    _waitingServer = false;
                     break;
 
                 case 3:
-                    textMessage.text = "Cannot create additional characters.";
-                    waitingServer = false;
+                    _textMessage.text = "Cannot create additional characters.";
+                    _waitingServer = false;
                     break;
 
                 case 4:
-                    textMessage.text = "Invalid creation parameters.";
-                    waitingServer = false;
+                    _textMessage.text = "Invalid creation parameters.";
+                    _waitingServer = false;
                     break;
 
                 case 100:
-                    textMessage.text = "Creation success!";
-                    waitingServer = false;
+                    _textMessage.text = "Creation success!";
+                    _waitingServer = false;
                     break;
             }
         }
 
         // Go to player selection screen.
-        if (creationResult == 100)
+        if (_creationResult == 100)
         {
             OnClickBackButton();
         }
@@ -313,16 +314,21 @@ public class CharacterCreationManager : MonoBehaviour
 
     private void DisableButtons()
     {
-        textMessage.text = "Waiting for server..."; // Clean any old messages.
-        createButton.enabled = false;
-        backButton.enabled = false;
-        charNameField.enabled = false;
+        _textMessage.text = "Waiting for server..."; // Clean any old messages.
+        _createButton.enabled = false;
+        _backButton.enabled = false;
+        _charNameField.enabled = false;
     }
 
     private void EnableButtons()
     {
-        createButton.enabled = true;
-        backButton.enabled = true;
-        charNameField.enabled = true;
+        _createButton.enabled = true;
+        _backButton.enabled = true;
+        _charNameField.enabled = true;
+    }
+
+    public void SetCreationResult(int value)
+    {
+        _creationResult = value;
     }
 }

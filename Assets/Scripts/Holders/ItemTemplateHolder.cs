@@ -6,27 +6,27 @@
  */
 public class ItemTemplateHolder
 {
-    private readonly int itemId;
-    private readonly ItemSlot itemSlot;
-    private readonly ItemType itemType;
-    private readonly string name;
-    private readonly string description;
-    private readonly Sprite icon;
-    private readonly string recipeMale;
-    private readonly string recipeFemale;
-    private readonly int prefabId;
-    private readonly Vector3 positionMale;
-    private readonly Vector3 positionFemale;
-    private readonly Quaternion rotationMale;
-    private readonly Quaternion rotationFemale;
-    private readonly Vector3 scaleMale;
-    private readonly Vector3 scaleFemale;
-    private readonly bool stackable;
-    private readonly bool tradable;
-    private readonly int stamina;
-    private readonly int strength;
-    private readonly int dexterity;
-    private readonly int intelect;
+    private readonly int _itemId;
+    private readonly ItemSlot _itemSlot;
+    private readonly ItemType _itemType;
+    private readonly string _name;
+    private readonly string _description;
+    private readonly Sprite _icon;
+    private readonly string _recipeMale;
+    private readonly string _recipeFemale;
+    private readonly int _prefabId;
+    private readonly Vector3 _positionMale;
+    private readonly Vector3 _positionFemale;
+    private readonly Quaternion _rotationMale;
+    private readonly Quaternion _rotationFemale;
+    private readonly Vector3 _scaleMale;
+    private readonly Vector3 _scaleFemale;
+    private readonly bool _stackable;
+    private readonly bool _tradable;
+    private readonly int _stamina;
+    private readonly int _strength;
+    private readonly int _dexterity;
+    private readonly int _intelect;
 
     /// <summary>
     /// itemId: the item id.
@@ -53,131 +53,131 @@ public class ItemTemplateHolder
     /// </summary>
     public ItemTemplateHolder(int itemId, ItemSlot itemSlot, ItemType itemType, string name, string description, Sprite icon, string recipeMale, string recipeFemale, int prefabId, Vector3 positionMale, Vector3 positionFemale, Quaternion rotationMale, Quaternion rotationFemale, Vector3 scaleMale, Vector3 scaleFemale, bool stackable, bool tradable, int stamina, int strength, int dexterity, int intelect)
     {
-        this.itemId = itemId;
-        this.itemSlot = itemSlot;
-        this.itemType = itemType;
-        this.name = name;
-        this.description = description;
-        this.icon = icon;
-        this.recipeMale = recipeMale;
-        this.recipeFemale = recipeFemale;
-        this.prefabId = prefabId;
-        this.positionMale = positionMale;
-        this.positionFemale = positionFemale;
-        this.rotationMale = rotationMale;
-        this.rotationFemale = rotationFemale;
-        this.scaleMale = scaleMale;
-        this.scaleFemale = scaleFemale;
-        this.stackable = stackable;
-        this.tradable = tradable;
-        this.stamina = stamina;
-        this.strength = strength;
-        this.dexterity = dexterity;
-        this.intelect = intelect;
+        _itemId = itemId;
+        _itemSlot = itemSlot;
+        _itemType = itemType;
+        _name = name;
+        _description = description;
+        _icon = icon;
+        _recipeMale = recipeMale;
+        _recipeFemale = recipeFemale;
+        _prefabId = prefabId;
+        _positionMale = positionMale;
+        _positionFemale = positionFemale;
+        _rotationMale = rotationMale;
+        _rotationFemale = rotationFemale;
+        _scaleMale = scaleMale;
+        _scaleFemale = scaleFemale;
+        _stackable = stackable;
+        _tradable = tradable;
+        _stamina = stamina;
+        _strength = strength;
+        _dexterity = dexterity;
+        _intelect = intelect;
     }
 
     public int GetItemId()
     {
-        return itemId;
+        return _itemId;
     }
 
     public ItemSlot GetItemSlot()
     {
-        return itemSlot;
+        return _itemSlot;
     }
 
     public ItemType GetItemType()
     {
-        return itemType;
+        return _itemType;
     }
 
     public string GetName()
     {
-        return name;
+        return _name;
     }
 
     public string GetDescription()
     {
-        return description;
+        return _description;
     }
 
     public Sprite GetIcon()
     {
-        return icon;
+        return _icon;
     }
 
     public string GetRecipeMale()
     {
-        return recipeMale;
+        return _recipeMale;
     }
 
     public string GetRecipeFemale()
     {
-        return recipeFemale;
+        return _recipeFemale;
     }
 
     public int GetPrefabId()
     {
-        return prefabId;
+        return _prefabId;
     }
 
     public Vector3 GetPositionMale()
     {
-        return positionMale;
+        return _positionMale;
     }
 
     public Vector3 GetPositionFemale()
     {
-        return positionFemale;
+        return _positionFemale;
     }
 
     public Quaternion GetRotationMale()
     {
-        return rotationMale;
+        return _rotationMale;
     }
 
     public Quaternion GetRotationFemale()
     {
-        return rotationFemale;
+        return _rotationFemale;
     }
 
     public Vector3 GetScaleMale()
     {
-        return scaleMale;
+        return _scaleMale;
     }
 
     public Vector3 GetScaleFemale()
     {
-        return scaleFemale;
+        return _scaleFemale;
     }
 
     public bool IsStackable()
     {
-        return stackable;
+        return _stackable;
     }
 
     public bool IsTradable()
     {
-        return tradable;
+        return _tradable;
     }
 
     public int GetSTA()
     {
-        return stamina;
+        return _stamina;
     }
 
     public int GetSTR()
     {
-        return strength;
+        return _strength;
     }
 
     public int GetDEX()
     {
-        return dexterity;
+        return _dexterity;
     }
 
     public int GetINT()
     {
-        return intelect;
+        return _intelect;
     }
 }

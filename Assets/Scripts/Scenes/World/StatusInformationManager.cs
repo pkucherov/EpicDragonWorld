@@ -10,13 +10,13 @@ public class StatusInformationManager : MonoBehaviour
 {
     public static StatusInformationManager Instance { get; private set; }
 
-    public TextMeshProUGUI playerInformation;
-    public Slider playerHpBar;
-    public TextMeshProUGUI playerHpPercent;
+    public TextMeshProUGUI _playerInformation;
+    public Slider _playerHpBar;
+    public TextMeshProUGUI _playerHpPercent;
 
-    public TextMeshProUGUI targetInformation;
-    public Slider targetHpBar;
-    public TextMeshProUGUI targetHpPercent;
+    public TextMeshProUGUI _targetInformation;
+    public Slider _targetHpBar;
+    public TextMeshProUGUI _targetHpPercent;
 
     private void Start()
     {
@@ -31,11 +31,11 @@ public class StatusInformationManager : MonoBehaviour
 
     private void HideTargetInformation()
     {
-        targetInformation.text = "";
-        targetHpBar.value = 1;
-        targetHpPercent.text = "";
-        targetInformation.gameObject.SetActive(false);
-        targetHpBar.gameObject.SetActive(false);
+        _targetInformation.text = "";
+        _targetHpBar.value = 1;
+        _targetHpPercent.text = "";
+        _targetInformation.gameObject.SetActive(false);
+        _targetHpBar.gameObject.SetActive(false);
     }
 
     public void UpdateTargetInformation(WorldObject obj)
@@ -47,28 +47,28 @@ public class StatusInformationManager : MonoBehaviour
             return;
         }
         // Show if hidden.
-        if (!targetInformation.IsActive())
+        if (!_targetInformation.IsActive())
         {
-            targetInformation.gameObject.SetActive(true);
-            targetHpBar.gameObject.SetActive(true);
+            _targetInformation.gameObject.SetActive(true);
+            _targetHpBar.gameObject.SetActive(true);
         }
         // Update information.
-        CharacterDataHolder data = obj.characterData;
+        CharacterDataHolder data = obj.GetCharacterData();
         if (data != null)
         {
-            targetInformation.text = data.GetName();
+            _targetInformation.text = data.GetName();
             float progress = Mathf.Clamp01(data.GetCurrentHp() / data.GetMaxHp());
-            targetHpBar.value = progress;
-            targetHpPercent.text = (int)(progress * 100f) + "%";
+            _targetHpBar.value = progress;
+            _targetHpPercent.text = (int)(progress * 100f) + "%";
         }
     }
 
     public void UpdatePlayerInformation()
     {
-        CharacterDataHolder data = MainManager.Instance.selectedCharacterData;
-        playerInformation.text = data.GetName();
+        CharacterDataHolder data = MainManager.Instance.GetSelectedCharacterData();
+        _playerInformation.text = data.GetName();
         float progress = Mathf.Clamp01(data.GetCurrentHp() / data.GetMaxHp());
-        playerHpBar.value = progress;
-        playerHpPercent.text = (int)(progress * 100f) + "%";
+        _playerHpBar.value = progress;
+        _playerHpPercent.text = (int)(progress * 100f) + "%";
     }
 }

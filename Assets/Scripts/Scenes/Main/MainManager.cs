@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -18,31 +19,24 @@ public class MainManager : MonoBehaviour
     public static readonly string CHARACTER_CREATION_SCENE = "CharacterCreation";
     public static readonly string WORLD_SCENE = "World";
 
-    public Canvas loadingCanvas;
-    public Slider loadingBar;
-    public TextMeshProUGUI loadingPercentage;
-    public MusicManager musicManager;
+    public Canvas _loadingCanvas;
+    public Slider _loadingBar;
+    public TextMeshProUGUI _loadingPercentage;
+    public MusicManager _musicManager;
 
-    [HideInInspector]
-    public bool hasInitialized = false; // Set to true when login scene has initialized.
-    [HideInInspector]
-    public string accountName;
-    [HideInInspector]
-    public List<CharacterDataHolder> characterList;
-    [HideInInspector]
-    public CharacterDataHolder selectedCharacterData;
-    [HideInInspector]
-    public bool isDraggingWindow = false;
-    [HideInInspector]
-    public bool isChatBoxActive = false;
-
-    public string lastLoadedScene = "";
+    private bool _isInitialized = false; // Set to true when login scene has initialized.
+    private string _accountName;
+    private List<CharacterDataHolder> _characterList;
+    private CharacterDataHolder _selectedCharacterData;
+    private bool _isDraggingWindow = false;
+    private bool _isChatBoxActive = false;
+    private string _lastLoadedScene = "";
 
     private void Start()
     {
         Instance = this;
         // Loading canvas should be enabled.
-        loadingCanvas.enabled = true;
+        _loadingCanvas.enabled = true;
         // Initialize network manager.
         new NetworkManager();
         // Load first scene.
@@ -56,25 +50,90 @@ public class MainManager : MonoBehaviour
 
     private IEnumerator LoadSceneCoroutine(string scene)
     {
-        loadingBar.value = 0;
-        loadingPercentage.text = "0%";
-        loadingCanvas.enabled = true;
+        _loadingBar.value = 0;
+        _loadingPercentage.text = "0%";
+        _loadingCanvas.enabled = true;
         AsyncOperation operation;
-        if (!lastLoadedScene.Equals(""))
+        if (!_lastLoadedScene.Equals(""))
         {
-            operation = SceneManager.UnloadSceneAsync(lastLoadedScene);
+            operation = SceneManager.UnloadSceneAsync(_lastLoadedScene);
             yield return new WaitUntil(() => operation.isDone);
         }
         operation = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
-        musicManager.PlayMusic(SceneManager.GetSceneByName(scene).buildIndex);
+        _musicManager.PlayMusic(SceneManager.GetSceneByName(scene).buildIndex);
         while (!operation.isDone)
         {
             float progress = Mathf.Clamp01(operation.progress / 0.9f);
-            loadingBar.value = progress;
-            loadingPercentage.text = (int)(progress * 100f) + "%";
+            _loadingBar.value = progress;
+            _loadingPercentage.text = (int)(progress * 100f) + "%";
             yield return null;
         }
-        lastLoadedScene = scene;
-        loadingCanvas.enabled = false;
+        _lastLoadedScene = scene;
+        _loadingCanvas.enabled = false;
+    }
+
+    public bool IsInitialized()
+    {
+        return _isInitialized;
+    }
+
+    public void SetInitialized(bool value)
+    {
+        _isInitialized = value;
+    }
+
+    public string GetAccountName()
+    {
+        return _accountName;
+    }
+
+    public void SetAccountName(string value)
+    {
+        _accountName = value;
+    }
+
+    public List<CharacterDataHolder> GetCharacterList()
+    {
+        return _characterList;
+    }
+
+    public void SetCharacterList(List<CharacterDataHolder> value)
+    {
+        _characterList = value;
+    }
+
+    public CharacterDataHolder GetSelectedCharacterData()
+    {
+        return _selectedCharacterData;
+    }
+
+    public void SetSelectedCharacterData(CharacterDataHolder value)
+    {
+        _selectedCharacterData = value;
+    }
+
+    public bool IsDraggingWindow()
+    {
+        return _isDraggingWindow;
+    }
+
+    public void SetDraggingWindow(bool value)
+    {
+        _isDraggingWindow = value;
+    }
+
+    public bool IsChatBoxActive()
+    {
+        return _isChatBoxActive;
+    }
+
+    public void SetChatBoxActive(bool value)
+    {
+        _isChatBoxActive = value;
+    }
+
+    public string GetLastLoadedScene()
+    {
+        return _lastLoadedScene;
     }
 }

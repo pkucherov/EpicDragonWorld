@@ -13,13 +13,13 @@ public class ChatBoxManager : MonoBehaviour
 {
     public static ChatBoxManager Instance { get; private set; }
 
-    public GameObject chatPanel;
-    public GameObject textObject;
-    public InputField inputField;
-    private List<Message> messageList = new List<Message>();
+    public GameObject _chatPanel;
+    public GameObject _textObject;
+    public InputField _inputField;
+    private List<Message> _messageList = new List<Message>();
     private static readonly string TIMESTAMP_FORMAT = "HH:mm:ss tt";
     private static readonly int MAX_MESSAGE_COUNT = 50;
-    private string lastTell = "";
+    private string _lastTell = "";
 
     private void Start()
     {
@@ -34,82 +34,82 @@ public class ChatBoxManager : MonoBehaviour
     {
         if (InputManager.RETURN_DOWN)
         {
-            MainManager.Instance.isChatBoxActive = !MainManager.Instance.isChatBoxActive;
+            MainManager.Instance.SetChatBoxActive(!MainManager.Instance.IsChatBoxActive());
 
-            if (MainManager.Instance.isChatBoxActive)
+            if (MainManager.Instance.IsChatBoxActive())
             {
-                if (lastTell.Length > 0)
+                if (_lastTell.Length > 0)
                 {
-                    inputField.text = "/tell " + lastTell + " ";
+                    _inputField.text = "/tell " + _lastTell + " ";
                     StartCoroutine(MoveToTextEndOnNextFrame());
                 }
-                inputField.ActivateInputField();
+                _inputField.ActivateInputField();
                 return;
             }
 
-            if (inputField.text.Length > 0)
+            if (_inputField.text.Length > 0)
             {
                 if (Application.isEditor)
                 {
-                    SendMessageToChat(inputField.text, 1);
+                    SendMessageToChat(_inputField.text, 1);
                 }
                 else
                 {
-                    NetworkManager.ChannelSend(new ChatRequest(inputField.text));
-                    string[] messageSplit = Regex.Replace(inputField.text, @"\s+", " ").Trim().Split(' ');
+                    NetworkManager.ChannelSend(new ChatRequest(_inputField.text));
+                    string[] messageSplit = Regex.Replace(_inputField.text, @"\s+", " ").Trim().Split(' ');
                     if (messageSplit.Length > 2 && messageSplit[0].ToLower().Equals("/tell"))
                     {
-                        lastTell = messageSplit[1];
+                        _lastTell = messageSplit[1];
                     }
                     else
                     {
-                        lastTell = "";
+                        _lastTell = "";
                     }
                 }
-                inputField.text = "";
-                inputField.DeactivateInputField();
+                _inputField.text = "";
+                _inputField.DeactivateInputField();
             }
         }
 
-        if (InputManager.ESCAPE_DOWN && MainManager.Instance.isChatBoxActive)
+        if (InputManager.ESCAPE_DOWN && MainManager.Instance.IsChatBoxActive())
         {
-            MainManager.Instance.isChatBoxActive = false;
-            inputField.DeactivateInputField();
+            MainManager.Instance.SetChatBoxActive(false);
+            _inputField.DeactivateInputField();
         }
     }
 
     private IEnumerator MoveToTextEndOnNextFrame()
     {
         yield return 0; // Skip the first frame in which this is called.
-        inputField.MoveTextEnd(false); // Do this during the next frame.
+        _inputField.MoveTextEnd(false); // Do this during the next frame.
     }
 
     public void SendMessageToChat(string text, int type)
     {
-        if (messageList.Count >= MAX_MESSAGE_COUNT)
+        if (_messageList.Count >= MAX_MESSAGE_COUNT)
         {
-            Destroy(messageList[0].textObject.gameObject);
-            messageList.Remove(messageList[0]);
+            Destroy(_messageList[0].textObject.gameObject);
+            _messageList.Remove(_messageList[0]);
         }
-        Message message = new Message { text = OptionsManager.useChatTimestamps ? DateTime.Now.ToString(TIMESTAMP_FORMAT) + " " + text : text };
-        GameObject newText = Instantiate(textObject, chatPanel.transform);
+        Message message = new Message { text = OptionsManager.Instance.UseChatTimestamps() ? DateTime.Now.ToString(TIMESTAMP_FORMAT) + " " + text : text };
+        GameObject newText = Instantiate(_textObject, _chatPanel.transform);
         message.textObject = newText.GetComponent<Text>();
         message.textObject.text = message.text;
         switch (type)
         {
             case 0: // system
-                message.textObject.color = Util.IntToColor(OptionsManager.chatColorSystemIntValue);
+                message.textObject.color = Util.IntToColor(OptionsManager.Instance.GetChatColorSystemIntValue());
                 break;
 
             case 1: // normal chat
-                message.textObject.color = Util.IntToColor(OptionsManager.chatColorNormalIntValue);
+                message.textObject.color = Util.IntToColor(OptionsManager.Instance.GetChatColorNormalIntValue());
                 break;
 
             case 2: // personal message
-                message.textObject.color = Util.IntToColor(OptionsManager.chatColorMessageIntValue);
+                message.textObject.color = Util.IntToColor(OptionsManager.Instance.GetChatColorMessageIntValue());
                 break;
         }
-        messageList.Add(message);
+        _messageList.Add(message);
     }
 }
 

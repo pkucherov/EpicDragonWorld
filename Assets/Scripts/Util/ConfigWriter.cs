@@ -8,11 +8,11 @@ using System.Text;
  */
 public class ConfigWriter
 {
-    private readonly string fileName;
+    private readonly string _fileName;
 
     public ConfigWriter(string fileName)
     {
-        this.fileName = fileName;
+        _fileName = fileName;
 
         try
         {
@@ -34,7 +34,7 @@ public class ConfigWriter
             // Check for existing config.
             bool found = false;
             StringBuilder contents = new StringBuilder();
-            string[] lines = File.ReadAllLines(fileName);
+            string[] lines = File.ReadAllLines(_fileName);
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
@@ -64,7 +64,7 @@ public class ConfigWriter
             }
 
             // Write new file contents.
-            File.WriteAllText(fileName, contents.ToString());
+            File.WriteAllText(_fileName, contents.ToString());
         }
         catch (Exception)
         {

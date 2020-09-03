@@ -10,15 +10,15 @@ public class MusicManager : MonoBehaviour
     public static MusicManager Instance { get; private set; }
 
     [Header("Mixers - Music Players")]
-    public AudioSource GameMixer;
-    public AudioSource LoginMixer;
-    public AudioSource CharSelectMixer;
-    public AudioSource CharCreationMixer;
+    public AudioSource _gameMixer;
+    public AudioSource _loginMixer;
+    public AudioSource _charSelectMixer;
+    public AudioSource _charCreationMixer;
 
     [Header("SnapShots - Music Players")]
-    public AudioMixerSnapshot[] AudioSnapshots;
+    public AudioMixerSnapshot[] _audioSnapshots;
 
-    private int savedIndex = 0;
+    private int _savedIndex = 0;
 
     private void Start()
     {
@@ -39,41 +39,41 @@ public class MusicManager : MonoBehaviour
             return;
         }
         // Only change music if track has changed.
-        if (savedIndex != index)
+        if (_savedIndex != index)
         {
             // Reset music time.
-            if (savedIndex != 1)
+            if (_savedIndex != 1)
             {
-                LoginMixer.time = 0;
+                _loginMixer.time = 0;
             }
-            if (savedIndex != 2)
+            if (_savedIndex != 2)
             {
-                CharSelectMixer.time = 0;
+                _charSelectMixer.time = 0;
             }
-            if (savedIndex != 3)
+            if (_savedIndex != 3)
             {
-                CharCreationMixer.time = 0;
+                _charCreationMixer.time = 0;
             }
-            if (savedIndex != 4)
+            if (_savedIndex != 4)
             {
-                GameMixer.time = 0;
+                _gameMixer.time = 0;
             }
 
             // Fade to new music.
             if (index == 1) // Login scene.
             {
-                AudioSnapshots[index].TransitionTo(0); // No fade.
+                _audioSnapshots[index].TransitionTo(0); // No fade.
             }
             else if (index == 4) // World scene.
             {
-                AudioSnapshots[index].TransitionTo(6); // Fade with 6 second delay.
+                _audioSnapshots[index].TransitionTo(6); // Fade with 6 second delay.
             }
             else
             {
-                AudioSnapshots[index].TransitionTo(2); // Fade with 2 second delay.
+                _audioSnapshots[index].TransitionTo(2); // Fade with 2 second delay.
             }
         }
-        savedIndex = index;
+        _savedIndex = index;
     }
 
     // Mute music section.
@@ -84,21 +84,21 @@ public class MusicManager : MonoBehaviour
 
     public void GameMusicMute()
     {
-        GameMixer.mute = !GameMixer.mute;
+        _gameMixer.mute = !_gameMixer.mute;
     }
 
     public void LoginMusicMute()
     {
-        LoginMixer.mute = !LoginMixer.mute;
+        _loginMixer.mute = !_loginMixer.mute;
     }
 
     public void CharSelectMusicMute()
     {
-        CharSelectMixer.mute = !CharSelectMixer.mute;
+        _charSelectMixer.mute = !_charSelectMixer.mute;
     }
 
     public void CharCreationMusicMute()
     {
-        CharCreationMixer.mute = !CharCreationMixer.mute;
+        _charCreationMixer.mute = !_charCreationMixer.mute;
     }
 }

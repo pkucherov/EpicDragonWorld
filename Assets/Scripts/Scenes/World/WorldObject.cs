@@ -6,30 +6,30 @@
  */
 public class WorldObject : MonoBehaviour
 {
-    public long objectId;
-    public volatile CharacterDataHolder characterData;
-    private double distance = 0;
+    private long _objectId;
+    private volatile CharacterDataHolder _characterData;
+    private double _distance = 0;
 
-    private Animator animator;
-    private Rigidbody rigidBody;
+    private Animator _animator;
+    private Rigidbody _rigidBody;
 
     // Is grounded related.
-    public volatile bool isGrounded = false;
+    private volatile bool _isGrounded = false;
 
     // Is in water related.
-    public volatile bool isInWater = false;
+    private volatile bool _isInWater = false;
 
     // Sound related.
-    private AudioSource audioSource;
+    private AudioSource _audioSource;
     private static readonly float SOUND_DISTANCE = 1000;
 
     private void Start()
     {
-        distance = WorldManager.Instance.CalculateDistance(transform.position);
-        animator = GetComponent<Animator>();
-        animator.applyRootMotion = true;
-        rigidBody = GetComponent<Rigidbody>();
-        audioSource = gameObject.GetComponent<AudioSource>();
+        _distance = WorldManager.Instance.CalculateDistance(transform.position);
+        _animator = GetComponent<Animator>();
+        _animator.applyRootMotion = true;
+        _rigidBody = GetComponent<Rigidbody>();
+        _audioSource = gameObject.GetComponent<AudioSource>();
     }
 
     public void MoveObject(Vector3 newPosition, float heading)
@@ -40,7 +40,7 @@ public class WorldObject : MonoBehaviour
         }
 
         float step = Time.deltaTime * 10;
-        rigidBody.MovePosition(Vector3.Lerp(transform.position, newPosition, step));
+        _rigidBody.MovePosition(Vector3.Lerp(transform.position, newPosition, step));
 
         Quaternion oldHeading = transform.localRotation;
         Quaternion newHeading = transform.localRotation;
@@ -50,18 +50,18 @@ public class WorldObject : MonoBehaviour
         transform.localRotation = Quaternion.Lerp(oldHeading, newHeading, step);
 
         // Update distance value.
-        distance = WorldManager.Instance.CalculateDistance(transform.position);
+        _distance = WorldManager.Instance.CalculateDistance(transform.position);
 
         // Set audioSource volume based on distance.
-        audioSource.volume = (1 - (float)(distance / SOUND_DISTANCE) * OptionsManager.Instance.GetSfxVolume());
+        _audioSource.volume = (1 - (float)(_distance / SOUND_DISTANCE) * OptionsManager.Instance.GetSfxVolume());
 
         // Animation related sounds.
-        if (distance < SOUND_DISTANCE)
+        if (_distance < SOUND_DISTANCE)
         {
             // Movement footstep sounds.
-            if (!audioSource.isPlaying && rigidBody.velocity.magnitude > 2 && isGrounded)
+            if (!_audioSource.isPlaying && _rigidBody.velocity.magnitude > 2 && _isGrounded)
             {
-                audioSource.PlayOneShot(SoundManager.Instance.FOOTSTEP_SOUND, 1);
+                _audioSource.PlayOneShot(SoundManager.Instance.FOOTSTEP_SOUND, 1);
             }
         }
     }
@@ -73,32 +73,52 @@ public class WorldObject : MonoBehaviour
             return;
         }
 
-        this.isGrounded = isGrounded;
-        this.isInWater = isInWater;
-        rigidBody.useGravity = !isInWater;
+        _isGrounded = isGrounded;
+        _isInWater = isInWater;
+        _rigidBody.useGravity = !isInWater;
 
-        animator.SetBool(AnimationController.IS_GROUNDED_VALUE, isGrounded);
-        animator.SetBool(AnimationController.IS_IN_WATER_VALUE, isInWater);
-        animator.SetFloat(AnimationController.VELOCITY_Z_VALUE, velocityZ);
-        animator.SetFloat(AnimationController.VELOCITY_X_VALUE, velocityX);
+        _animator.SetBool(AnimationController.IS_GROUNDED_VALUE, isGrounded);
+        _animator.SetBool(AnimationController.IS_IN_WATER_VALUE, isInWater);
+        _animator.SetFloat(AnimationController.VELOCITY_Z_VALUE, velocityZ);
+        _animator.SetFloat(AnimationController.VELOCITY_X_VALUE, velocityX);
         if (triggerJump)
         {
-            animator.SetTrigger(AnimationController.TRIGGER_JUMP_VALUE);
+            _animator.SetTrigger(AnimationController.TRIGGER_JUMP_VALUE);
         }
     }
 
-    public bool IsObjectGrounded()
+    public long GetObjectId()
     {
-        return isGrounded;
+        return _objectId;
     }
 
-    public bool IsObjectInWater()
+    public void SetObjectId(long value)
     {
-        return isInWater;
+        _objectId = value;
+    }
+
+    public CharacterDataHolder GetCharacterData()
+    {
+        return _characterData;
+    }
+
+    public void SetCharacterData(CharacterDataHolder value)
+    {
+        _characterData = value;
+    }
+
+    public bool IsGrounded()
+    {
+        return _isGrounded;
+    }
+
+    public bool IsInWater()
+    {
+        return _isInWater;
     }
 
     public double GetDistance()
     {
-        return distance;
+        return _distance;
     }
 }

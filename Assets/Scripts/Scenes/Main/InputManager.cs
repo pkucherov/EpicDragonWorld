@@ -67,7 +67,7 @@ public class InputManager : MonoBehaviour
         // On all cases check if escape key is pressed.
         ESCAPE_DOWN = Input.GetKeyDown(KEY_ESCAPE);
         // Do not proceed when keybind canvas is active and waits for a new input.
-        if (OptionsManager.Instance.keybindMenuCanvas.gameObject.activeSelf)
+        if (OptionsManager.Instance.GetKeybindMenuCanvas().gameObject.activeSelf)
         {
             return;
         }
@@ -109,7 +109,7 @@ public class InputManager : MonoBehaviour
         AXIS_MOUSE_Y = Input.GetAxis(AXIS_MOUSE_Y_VALUE);
         AXIS_MOUSE_SCROLLWHEEL = Input.GetAxis(AXIS_MOUSE_SCROLLWHEEL_VALUE);
 
-        if (OptionsManager.Instance.optionsCanvas.enabled)
+        if (OptionsManager.Instance.GetOptionsCanvas().enabled)
         {
             RefreshButtonTextValues();
         }

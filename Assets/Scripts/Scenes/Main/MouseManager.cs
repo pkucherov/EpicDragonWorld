@@ -6,22 +6,22 @@
  */
 public class MouseManager : MonoBehaviour
 {
-    public Texture2D normalCursor;
-    public Texture2D clickCursor;
+    public Texture2D _normalCursor;
+    public Texture2D _clickCursor;
 
     private void Start()
     {
-        Cursor.SetCursor(normalCursor, Vector2.zero, CursorMode.Auto);
+        Cursor.SetCursor(_normalCursor, Vector2.zero, CursorMode.Auto);
     }
 
     private void Update()
     {
         if (InputManager.LEFT_MOUSE_DOWN)
         {
-            Cursor.SetCursor(clickCursor, Vector2.zero, CursorMode.Auto);
+            Cursor.SetCursor(_clickCursor, Vector2.zero, CursorMode.Auto);
 
             // World target related.
-            if (!MainManager.Instance.lastLoadedScene.Equals(MainManager.WORLD_SCENE))
+            if (!MainManager.Instance.GetLastLoadedScene().Equals(MainManager.WORLD_SCENE))
             {
                 return;
             }
@@ -32,10 +32,10 @@ public class MouseManager : MonoBehaviour
                 if (transform != null)
                 {
                     WorldObject worldObject = transform.gameObject.GetComponent<WorldObject>();
-                    if (worldObject != null && worldObject.characterData != null && worldObject.characterData.IsTargetable())
+                    if (worldObject != null && worldObject.GetCharacterData() != null && worldObject.GetCharacterData().IsTargetable())
                     {
                         // Interact.
-                        if (WorldManager.Instance.targetWorldObject == worldObject)
+                        if (WorldManager.Instance.GetTargetWorldObject() == worldObject)
                         {
                             // TODO: Interact.
                         }
@@ -50,7 +50,7 @@ public class MouseManager : MonoBehaviour
         else if (InputManager.LEFT_MOUSE_UP || InputManager.RIGHT_MOUSE_UP)
         {
             Cursor.visible = true;
-            Cursor.SetCursor(normalCursor, Vector2.zero, CursorMode.Auto);
+            Cursor.SetCursor(_normalCursor, Vector2.zero, CursorMode.Auto);
         }
     }
 }

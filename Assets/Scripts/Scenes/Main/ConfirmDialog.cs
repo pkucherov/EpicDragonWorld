@@ -10,52 +10,57 @@ public class ConfirmDialog : MonoBehaviour
 {
     public static ConfirmDialog Instance { get; private set; }
 
-    public Canvas canvas;
-    public Button acceptButton;
-    public Button declineButton;
-    public Button closeButton;
-    public TextMeshProUGUI  messageText;
-    [HideInInspector]
-    public bool confirmDialogActive = false;
-    private int confirmDialogId;
+    public Canvas _canvas;
+    public Button _acceptButton;
+    public Button _declineButton;
+    public Button _closeButton;
+    public TextMeshProUGUI _messageText;
+
+    private bool _confirmDialogActive = false;
+    private int _confirmDialogId;
 
     private void Start()
     {
         Instance = this;
 
         // Click listeners.
-        acceptButton.onClick.AddListener(AcceptConfirmDialog);
-        declineButton.onClick.AddListener(CloseConfirmDialog);
-        closeButton.onClick.AddListener(CloseConfirmDialog);
+        _acceptButton.onClick.AddListener(AcceptConfirmDialog);
+        _declineButton.onClick.AddListener(CloseConfirmDialog);
+        _closeButton.onClick.AddListener(CloseConfirmDialog);
         // Close UI.
         CloseConfirmDialog();
     }
 
     private void Update()
     {
-        if (InputManager.ESCAPE_DOWN && canvas.enabled)
+        if (InputManager.ESCAPE_DOWN && _canvas.enabled)
         {
             CloseConfirmDialog();
         }
     }
 
+    public bool IsConfirmDialogActive()
+    {
+        return _confirmDialogActive;
+    }
+
     public void PlayerConfirm(string question, int dialogId)
     {
         // Return false when waiting other dialog confirm.
-        if (confirmDialogActive)
+        if (_confirmDialogActive)
         {
             return;
         }
-        confirmDialogActive = true;
-        messageText.text = question;
-        confirmDialogId = dialogId;
-        canvas.enabled = true;
+        _confirmDialogActive = true;
+        _messageText.text = question;
+        _confirmDialogId = dialogId;
+        _canvas.enabled = true;
     }
 
     private void AcceptConfirmDialog()
     {
-        canvas.enabled = false;
-        switch (confirmDialogId)
+        _canvas.enabled = false;
+        switch (_confirmDialogId)
         {
             case 1:
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
@@ -68,16 +73,16 @@ public class ConfirmDialog : MonoBehaviour
             case 3:
                 NetworkManager.ChannelSend(new ExitWorldRequest());
                 WorldManager.Instance.ExitWorld();
-                OptionsManager.Instance.optionsCanvas.enabled = false;
+                OptionsManager.Instance.GetOptionsCanvas().enabled = false;
                 MainManager.Instance.LoadScene(MainManager.CHARACTER_SELECTION_SCENE);
                 break;
         }
-        confirmDialogActive = false;
+        _confirmDialogActive = false;
     }
 
     private void CloseConfirmDialog()
     {
-        canvas.enabled = false;
-        confirmDialogActive = false;
+        _canvas.enabled = false;
+        _confirmDialogActive = false;
     }
 }

@@ -6,16 +6,16 @@
  */
 public class Underwater : MonoBehaviour
 {
-    public float waterHeight;
+    public float _waterHeight = 65f;
 
-    private bool isUnderwater;
-    private Color normalColor;
-    private Color underwaterColor;
+    private bool _isUnderwater;
+    private Color _normalColor;
+    private Color _underwaterColor;
 
     private void Start()
     {
-        normalColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-        underwaterColor = new Color(0.3047348f, 0.5396f, 0.6037f, 0.5019f);
+        _normalColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+        _underwaterColor = new Color(0.3047348f, 0.5396f, 0.6037f, 0.5019f);
 
         // Set both modes to avoid later latency when switch and initializing.
         SetUnderwater();
@@ -24,10 +24,10 @@ public class Underwater : MonoBehaviour
 
     private void Update()
     {
-        if ((transform.position.y < waterHeight) != isUnderwater)
+        if ((transform.position.y < _waterHeight) != _isUnderwater)
         {
-            isUnderwater = transform.position.y < waterHeight;
-            if (isUnderwater)
+            _isUnderwater = transform.position.y < _waterHeight;
+            if (_isUnderwater)
 			{
 				SetUnderwater();
 			}
@@ -40,14 +40,14 @@ public class Underwater : MonoBehaviour
 
     private void SetNormal()
     {
-        RenderSettings.fogColor = normalColor;
+        RenderSettings.fogColor = _normalColor;
         RenderSettings.fogDensity = 0.01f;
         RenderSettings.fogMode = FogMode.Linear;
     }
 
     private void SetUnderwater()
     {
-        RenderSettings.fogColor = underwaterColor;
+        RenderSettings.fogColor = _underwaterColor;
         RenderSettings.fogDensity = 0.1f;
         RenderSettings.fogMode = FogMode.Exponential;
     }

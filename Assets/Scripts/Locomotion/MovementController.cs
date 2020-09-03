@@ -6,116 +6,116 @@
  */
 public class MovementController : MonoBehaviour
 {
-    // Configs.
-    public float speed = 1.0f;
-    public float speedRotation = 8.0f;
-    public float speedWater = 0.999f;
-    public float speedJump = 5.5f;
-    public float jumpPower = 7.5f;
-    public float distToGround = 0.1f;
-    public float waterLevel = 63.2f;
     // Static values.
     private readonly string LAYER_GROUND_VALUE = "Everything";
     private readonly string WATER_TAG_VALUE = "Water";
+    // Configs.
+    public float _speed = 1.0f;
+    public float _speedRotation = 8.0f;
+    public float _speedWater = 0.999f;
+    public float _speedJump = 5.5f;
+    public float _jumpPower = 7.5f;
+    public float _distToGround = 0.1f;
+    public float _waterLevel = 63.2f;
     // Non-static values.
-    private Rigidbody rigidBody;
-    private LayerMask layerGround;
-    private float speedCurrent = 0;
-    public static bool leftSideMovement = false;
-    public static bool rightSideMovement = false;
-    public static bool lockedMovement = false;
-    public static float storedRotation = 0;
-    public static Vector3 storedPosition = Vector3.zero;
+    private float _speedCurrent = 0;
+    private static bool _leftSideMovement = false;
+    private static bool _rightSideMovement = false;
+    private static bool _lockedMovement = false;
+    private static float _storedRotation = 0;
+    private static Vector3 _storedPosition = Vector3.zero;
+    private Rigidbody _rigidBody;
+    private LayerMask _layerGround;
 
     private void Start()
     {
-        layerGround = LayerMask.NameToLayer(LAYER_GROUND_VALUE);
-        rigidBody = GetComponent<Rigidbody>();
-        rigidBody.useGravity = !WorldManager.Instance.isPlayerInWater;
-        storedPosition = transform.position;
-        storedRotation = transform.localRotation.eulerAngles.y;
+        _layerGround = LayerMask.NameToLayer(LAYER_GROUND_VALUE);
+        _rigidBody = GetComponent<Rigidbody>();
+        _rigidBody.useGravity = !WorldManager.Instance.IsPlayerInWater();
+        _storedPosition = transform.position;
+        _storedRotation = transform.localRotation.eulerAngles.y;
     }
 
     private void Update()
     {
         // Set player grounded state.
-        WorldManager.Instance.isPlayerOnTheGround = Physics.Raycast(rigidBody.transform.position, Vector3.down, distToGround, layerGround);
+        WorldManager.Instance.SetPlayerOnTheGround(Physics.Raycast(_rigidBody.transform.position, Vector3.down, _distToGround, _layerGround));
 
         // Calculate current speed.
-        speedCurrent = WorldManager.Instance.isPlayerInWater ? speedWater : WorldManager.Instance.isPlayerOnTheGround ? speed : speedJump;
+        _speedCurrent = WorldManager.Instance.IsPlayerInWater() ? _speedWater : WorldManager.Instance.IsPlayerOnTheGround() ? _speed : _speedJump;
 
         // Do nothing when chat is active.
-        if (MainManager.Instance.isChatBoxActive)
+        if (MainManager.Instance.IsChatBoxActive())
         {
-            if (lockedMovement)
+            if (_lockedMovement)
             {
-                transform.localPosition += transform.forward * speedCurrent * Time.deltaTime;
+                transform.localPosition += transform.forward * _speedCurrent * Time.deltaTime;
             }
         }
         else
         {
             // Check for locked movement.
-            if (InputManager.NUMLOCK_DOWN || InputManager.SIDE_MOUSE_DOWN || (!lockedMovement && InputManager.LEFT_MOUSE_PRESS && InputManager.RIGHT_MOUSE_PRESS) || (lockedMovement && (InputManager.RIGHT_MOUSE_UP || InputManager.UP_PRESS || InputManager.DOWN_PRESS)))
+            if (InputManager.NUMLOCK_DOWN || InputManager.SIDE_MOUSE_DOWN || (!_lockedMovement && InputManager.LEFT_MOUSE_PRESS && InputManager.RIGHT_MOUSE_PRESS) || (_lockedMovement && (InputManager.RIGHT_MOUSE_UP || InputManager.UP_PRESS || InputManager.DOWN_PRESS)))
             {
-                lockedMovement = !lockedMovement;
+                _lockedMovement = !_lockedMovement;
             }
 
             // Jump.
             if (InputManager.SPACE_PRESS)
             {
-                if (WorldManager.Instance.isPlayerInWater)
+                if (WorldManager.Instance.IsPlayerInWater())
                 {
                     // TODO: Check if player goes upper than water level.
                     // if (Physics.Raycast(rBody.transform.position, Vector3.up, distToGround, layerWater))
-                    if (transform.position.y <= waterLevel)
+                    if (transform.position.y <= _waterLevel)
                     {
-                        transform.localPosition += transform.up * speedCurrent * Time.deltaTime;
+                        transform.localPosition += transform.up * _speedCurrent * Time.deltaTime;
                     }
                 }
-                else if (WorldManager.Instance.isPlayerOnTheGround)
+                else if (WorldManager.Instance.IsPlayerOnTheGround())
                 {
-                    speedCurrent = speedJump;
-                    rigidBody.velocity = new Vector3(rigidBody.velocity.x, jumpPower, rigidBody.velocity.y);
+                    _speedCurrent = _speedJump;
+                    _rigidBody.velocity = new Vector3(_rigidBody.velocity.x, _jumpPower, _rigidBody.velocity.y);
                 }
             }
 
             // Front.
-            if (InputManager.UP_PRESS || lockedMovement)
+            if (InputManager.UP_PRESS || _lockedMovement)
             {
-                transform.localPosition += transform.forward * speedCurrent * Time.deltaTime;
+                transform.localPosition += transform.forward * _speedCurrent * Time.deltaTime;
             }
 
             // Back.
             if (InputManager.DOWN_PRESS)
             {
-                transform.localPosition -= transform.forward * (speedCurrent * 0.66f) * Time.deltaTime;
+                transform.localPosition -= transform.forward * (_speedCurrent * 0.66f) * Time.deltaTime;
             }
 
             // Check for side movement.
             if (!InputManager.RIGHT_MOUSE_PRESS)
             {
-                leftSideMovement = false;
-                rightSideMovement = false;
+                _leftSideMovement = false;
+                _rightSideMovement = false;
             }
 
             // Left.
             if (InputManager.LEFT_PRESS && !InputManager.RIGHT_PRESS)
             {
-                if (InputManager.RIGHT_MOUSE_PRESS && !lockedMovement && !InputManager.UP_PRESS && !InputManager.DOWN_PRESS && !InputManager.LEFT_MOUSE_PRESS)
+                if (InputManager.RIGHT_MOUSE_PRESS && !_lockedMovement && !InputManager.UP_PRESS && !InputManager.DOWN_PRESS && !InputManager.LEFT_MOUSE_PRESS)
                 {
-                    if (!leftSideMovement)
+                    if (!_leftSideMovement)
                     {
-                        leftSideMovement = true;
+                        _leftSideMovement = true;
                         SetPlayerRotation(CameraController.Instance.transform.rotation.eulerAngles.y - 90);
                     }
-                    transform.localPosition += transform.forward * speedCurrent * Time.deltaTime;
+                    transform.localPosition += transform.forward * _speedCurrent * Time.deltaTime;
                 }
-                else if (!leftSideMovement)
+                else if (!_leftSideMovement)
                 {
-                    rightSideMovement = false;
+                    _rightSideMovement = false;
                     if (InputManager.LEFT_MOUSE_PRESS || (!(InputManager.LEFT_MOUSE_PRESS && !InputManager.DOWN_PRESS)))
                     {
-                        SetPlayerRotation(transform.rotation.eulerAngles.y - (!InputManager.LEFT_MOUSE_PRESS ? speedRotation : speedRotation * 0.66f));
+                        SetPlayerRotation(transform.rotation.eulerAngles.y - (!InputManager.LEFT_MOUSE_PRESS ? _speedRotation : _speedRotation * 0.66f));
                     }
                     else
                     {
@@ -125,27 +125,27 @@ public class MovementController : MonoBehaviour
             }
             else
             {
-                leftSideMovement = false;
+                _leftSideMovement = false;
             }
 
             // Right.
             if (InputManager.RIGHT_PRESS && !InputManager.LEFT_PRESS)
             {
-                if (InputManager.RIGHT_MOUSE_PRESS && !lockedMovement && !InputManager.UP_PRESS && !InputManager.DOWN_PRESS && !InputManager.LEFT_MOUSE_PRESS)
+                if (InputManager.RIGHT_MOUSE_PRESS && !_lockedMovement && !InputManager.UP_PRESS && !InputManager.DOWN_PRESS && !InputManager.LEFT_MOUSE_PRESS)
                 {
-                    if (!rightSideMovement)
+                    if (!_rightSideMovement)
                     {
-                        rightSideMovement = true;
+                        _rightSideMovement = true;
                         SetPlayerRotation(CameraController.Instance.transform.rotation.eulerAngles.y + 90);
                     }
-                    transform.localPosition += transform.forward * speedCurrent * Time.deltaTime;
+                    transform.localPosition += transform.forward * _speedCurrent * Time.deltaTime;
                 }
-                else if (!rightSideMovement)
+                else if (!_rightSideMovement)
                 {
-                    leftSideMovement = false;
+                    _leftSideMovement = false;
                     if (InputManager.LEFT_MOUSE_PRESS || (!(InputManager.LEFT_MOUSE_PRESS && !InputManager.DOWN_PRESS)))
                     {
-                        SetPlayerRotation(transform.rotation.eulerAngles.y + (!InputManager.LEFT_MOUSE_PRESS ? speedRotation : speedRotation * 0.66f));
+                        SetPlayerRotation(transform.rotation.eulerAngles.y + (!InputManager.LEFT_MOUSE_PRESS ? _speedRotation : _speedRotation * 0.66f));
                     }
                     else
                     {
@@ -155,19 +155,19 @@ public class MovementController : MonoBehaviour
             }
             else
             {
-                rightSideMovement = false;
+                _rightSideMovement = false;
             }
         }
 
         // Send changes to network.
-        if (storedRotation != transform.localRotation.eulerAngles.y
-            || storedPosition.x != transform.position.x //
-            || storedPosition.y != transform.position.y //
-            || storedPosition.z != transform.position.z)
+        if (_storedRotation != transform.localRotation.eulerAngles.y
+            || _storedPosition.x != transform.position.x //
+            || _storedPosition.y != transform.position.y //
+            || _storedPosition.z != transform.position.z)
         {
             NetworkManager.ChannelSend(new LocationUpdateRequest(transform.position.x, transform.position.y, transform.position.z, transform.localRotation.eulerAngles.y));
-            storedPosition = transform.position;
-            storedRotation = transform.localRotation.eulerAngles.y;
+            _storedPosition = transform.position;
+            _storedRotation = transform.localRotation.eulerAngles.y;
         }
     }
 
@@ -192,19 +192,39 @@ public class MovementController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag.Equals(WATER_TAG_VALUE) && !WorldManager.Instance.isPlayerInWater)
+        if (other.gameObject.tag.Equals(WATER_TAG_VALUE) && !WorldManager.Instance.IsPlayerInWater())
         {
-            WorldManager.Instance.isPlayerInWater = true;
-            rigidBody.useGravity = false;
+            WorldManager.Instance.SetPlayerInWater(true);
+            _rigidBody.useGravity = false;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag.Equals(WATER_TAG_VALUE) && WorldManager.Instance.isPlayerInWater)
+        if (other.gameObject.tag.Equals(WATER_TAG_VALUE) && WorldManager.Instance.IsPlayerInWater())
         {
-            WorldManager.Instance.isPlayerInWater = false;
-            rigidBody.useGravity = true;
+            WorldManager.Instance.SetPlayerInWater(false);
+            _rigidBody.useGravity = true;
         }
+    }
+
+    public static bool IsLeftSideMovement()
+    {
+        return _leftSideMovement;
+    }
+
+    public static bool IsRightSideMovement()
+    {
+        return _rightSideMovement;
+    }
+
+    public static float GetStoredRotation()
+    {
+        return _storedRotation;
+    }
+
+    public static Vector3 GetStoredPosition()
+    {
+        return _storedPosition;
     }
 }

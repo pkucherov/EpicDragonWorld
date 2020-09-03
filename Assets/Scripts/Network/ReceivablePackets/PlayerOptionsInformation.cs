@@ -8,10 +8,10 @@ public class PlayerOptionsInformation
 {
     public static void Notify(ReceivablePacket packet)
     {
-        OptionsManager.chatColorNormalIntValue = packet.ReadInt();
-        OptionsManager.chatColorMessageIntValue = packet.ReadInt();
-        OptionsManager.chatColorSystemIntValue = packet.ReadInt();
-        OptionsManager.useChatTimestamps = packet.ReadByte() == 1;
+        OptionsManager.Instance.SetChatColorNormalIntValue(packet.ReadInt());
+        OptionsManager.Instance.SetChatColorMessageIntValue(packet.ReadInt());
+        OptionsManager.Instance.SetChatColorSystemIntValue(packet.ReadInt());
+        OptionsManager.Instance.SetUseChatTimestamps(packet.ReadByte() == 1);
 
         InputManager.SetKeybind(0, (KeyCode)packet.ReadShort());
         InputManager.SetKeybind(1, (KeyCode)packet.ReadShort());

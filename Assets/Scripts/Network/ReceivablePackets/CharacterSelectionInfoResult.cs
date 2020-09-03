@@ -46,9 +46,9 @@ public class CharacterSelectionInfoResult
         }
 
         // Send the data.
-        MainManager.Instance.characterList = characterList;
+        MainManager.Instance.SetCharacterList(characterList);
 
         // Enable player selection.
-        CharacterSelectionManager.Instance.waitingServer = false;
+        CharacterSelectionManager.Instance.SetWaitingServer(false);
     }
 }

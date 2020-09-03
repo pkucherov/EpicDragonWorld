@@ -13,33 +13,21 @@ public class WorldManager : MonoBehaviour
 {
     public static WorldManager Instance { get; private set; }
 
-    [HideInInspector]
-    public DynamicCharacterAvatar activeCharacter;
-    [HideInInspector]
-    public WorldObject targetWorldObject;
-    [HideInInspector]
-    public bool isPlayerInWater = false;
-    [HideInInspector]
-    public bool isPlayerOnTheGround = false;
-    [HideInInspector]
-    public bool kickFromWorld = false;
-    [HideInInspector]
-    private bool exitingWorld = false;
-    [HideInInspector]
-    public ConcurrentDictionary<long, GameObject> gameObjects;
-    [HideInInspector]
-    public ConcurrentDictionary<long, MovementHolder> moveQueue;
-    [HideInInspector]
-    public ConcurrentDictionary<long, AnimationHolder> animationQueue;
-    [HideInInspector]
-    public ConcurrentDictionary<long, CharacterDataHolder> characterUpdateQueue;
-    [HideInInspector]
-    public List<long> deleteQueue;
-    [HideInInspector]
     public static readonly int VISIBILITY_RADIUS = 10000; // This is the maximum allowed visibility radius.
+    public static readonly object UPDATE_OBJECT_LOCK = new object();
+    private static readonly object UPDATE_METHOD_LOCK = new object();
 
-    public static readonly object updateObjectLock = new object();
-    private static readonly object updateMethodLock = new object();
+    private DynamicCharacterAvatar _activeCharacter;
+    private WorldObject _targetWorldObject;
+    private bool _isPlayerInWater = false;
+    private bool _isPlayerOnTheGround = false;
+    private bool _kickFromWorld = false;
+    private bool _exitingWorld = false;
+    private ConcurrentDictionary<long, GameObject> _gameObjects;
+    private ConcurrentDictionary<long, MovementHolder> _moveQueue;
+    private ConcurrentDictionary<long, AnimationHolder> _animationQueue;
+    private ConcurrentDictionary<long, CharacterDataHolder> _characterUpdateQueue;
+    private List<long> _deleteQueue;
 
     private void Start()
     {
@@ -49,83 +37,83 @@ public class WorldManager : MonoBehaviour
         }
         Instance = this;
 
-        gameObjects = new ConcurrentDictionary<long, GameObject>();
-        moveQueue = new ConcurrentDictionary<long, MovementHolder>();
-        animationQueue = new ConcurrentDictionary<long, AnimationHolder>();
-        characterUpdateQueue = new ConcurrentDictionary<long, CharacterDataHolder>();
-        deleteQueue = new List<long>();
+        _gameObjects = new ConcurrentDictionary<long, GameObject>();
+        _moveQueue = new ConcurrentDictionary<long, MovementHolder>();
+        _animationQueue = new ConcurrentDictionary<long, AnimationHolder>();
+        _characterUpdateQueue = new ConcurrentDictionary<long, CharacterDataHolder>();
+        _deleteQueue = new List<long>();
 
-        if (MainManager.Instance.selectedCharacterData != null)
+        if (MainManager.Instance.GetSelectedCharacterData() != null)
         {
             // Create player character.
-            activeCharacter = CharacterManager.Instance.CreateCharacter(MainManager.Instance.selectedCharacterData);
+            _activeCharacter = CharacterManager.Instance.CreateCharacter(MainManager.Instance.GetSelectedCharacterData());
             // Tempfix.
             // TODO: Find why character initializes at 0, 0.
             // TODO: Try initialize with delay?
-            Destroy(activeCharacter.gameObject);
-            activeCharacter = CharacterManager.Instance.CreateCharacter(MainManager.Instance.selectedCharacterData);
+            Destroy(_activeCharacter.gameObject);
+            _activeCharacter = CharacterManager.Instance.CreateCharacter(MainManager.Instance.GetSelectedCharacterData());
 
             // Animations.
-            activeCharacter.gameObject.AddComponent<AnimationController>();
+            _activeCharacter.gameObject.AddComponent<AnimationController>();
 
             // Movement.
-            activeCharacter.gameObject.AddComponent<MovementController>();
+            _activeCharacter.gameObject.AddComponent<MovementController>();
 
             // Add name text.
-            WorldObjectText worldObjectText = activeCharacter.gameObject.AddComponent<WorldObjectText>();
-            worldObjectText.worldObjectName = ""; // MainManager.Instance.selectedCharacterData.GetName();
-            worldObjectText.attachedObject = activeCharacter.gameObject;
+            WorldObjectText worldObjectText = _activeCharacter.gameObject.AddComponent<WorldObjectText>();
+            worldObjectText.SetWorldObjectName(""); // MainManager.Instance.selectedCharacterData.GetName();
+            worldObjectText.SetAttachedObject(_activeCharacter.gameObject);
 
             // Update status information.
             StatusInformationManager.Instance.UpdatePlayerInformation();
 
             // Send enter world to Network.
-            NetworkManager.ChannelSend(new EnterWorldRequest(MainManager.Instance.selectedCharacterData.GetName()));
+            NetworkManager.ChannelSend(new EnterWorldRequest(MainManager.Instance.GetSelectedCharacterData().GetName()));
         }
     }
 
     private void Update()
     {
-        if (exitingWorld)
+        if (_exitingWorld)
         {
             return;
         }
-        if (kickFromWorld)
+        if (_kickFromWorld)
         {
             ExitWorld();
             MainManager.Instance.LoadScene(MainManager.LOGIN_SCENE);
             return;
         }
 
-        lock (updateMethodLock)
+        lock (UPDATE_METHOD_LOCK)
         {
             // Distance check.
-            foreach (GameObject obj in gameObjects.Values)
+            foreach (GameObject obj in _gameObjects.Values)
             {
                 if (obj != null && CalculateDistance(obj.transform.position) > VISIBILITY_RADIUS)
                 {
                     WorldObject worldObject = obj.GetComponent<WorldObject>();
-                    if (worldObject != null && !deleteQueue.Contains(worldObject.objectId))
+                    if (worldObject != null && !_deleteQueue.Contains(worldObject.GetObjectId()))
                     {
-                        deleteQueue.Add(worldObject.objectId);
+                        _deleteQueue.Add(worldObject.GetObjectId());
                     }
                 }
             }
 
             // Delete pending objects.
-            foreach (long objectId in deleteQueue)
+            foreach (long objectId in _deleteQueue)
             {
-                if (gameObjects.ContainsKey(objectId))
+                if (_gameObjects.ContainsKey(objectId))
                 {
-                    GameObject obj = gameObjects[objectId];
+                    GameObject obj = _gameObjects[objectId];
                     if (obj != null)
                     {
                         // Disable.
-                        obj.GetComponent<WorldObjectText>().nameMesh.gameObject.SetActive(false);
+                        obj.GetComponent<WorldObjectText>().GetNameMesh().gameObject.SetActive(false);
                         obj.SetActive(false);
 
                         // Remove from objects list.
-                        ((IDictionary<long, GameObject>)gameObjects).Remove(obj.GetComponent<WorldObject>().objectId);
+                        ((IDictionary<long, GameObject>)_gameObjects).Remove(obj.GetComponent<WorldObject>().GetObjectId());
 
                         // Delete game object from world with a delay.
                         StartCoroutine(DelayedDestroy(obj));
@@ -133,23 +121,23 @@ public class WorldManager : MonoBehaviour
                 }
 
                 // If object was current target, unselect it.
-                if (targetWorldObject != null && targetWorldObject.objectId == objectId)
+                if (_targetWorldObject != null && _targetWorldObject.GetObjectId() == objectId)
                 {
                     SetTarget(null);
                 }
             }
-            if (deleteQueue.Count > 0)
+            if (_deleteQueue.Count > 0)
             {
-                deleteQueue.Clear();
+                _deleteQueue.Clear();
             }
 
             // Move pending objects.
-            foreach (KeyValuePair<long, MovementHolder> entry in moveQueue)
+            foreach (KeyValuePair<long, MovementHolder> entry in _moveQueue)
             {
-                Vector3 position = new Vector3(entry.Value.posX, entry.Value.posY, entry.Value.posZ);
-                if (gameObjects.ContainsKey(entry.Key))
+                Vector3 position = new Vector3(entry.Value.GetX(), entry.Value.GetY(), entry.Value.GetZ());
+                if (_gameObjects.ContainsKey(entry.Key))
                 {
-                    GameObject obj = gameObjects[entry.Key];
+                    GameObject obj = _gameObjects[entry.Key];
                     if (obj != null)
                     {
                         WorldObject worldObject = obj.GetComponent<WorldObject>();
@@ -158,12 +146,12 @@ public class WorldManager : MonoBehaviour
                             if (CalculateDistance(position) > VISIBILITY_RADIUS) // Moved out of sight.
                             {
                                 // Broadcast self position, object out of sight.
-                                NetworkManager.ChannelSend(new LocationUpdateRequest(MovementController.storedPosition.x, MovementController.storedPosition.y, MovementController.storedPosition.z, MovementController.storedRotation));
-                                deleteQueue.Add(worldObject.objectId);
+                                NetworkManager.ChannelSend(new LocationUpdateRequest(MovementController.GetStoredPosition().x, MovementController.GetStoredPosition().y, MovementController.GetStoredPosition().z, MovementController.GetStoredRotation()));
+                                _deleteQueue.Add(worldObject.GetObjectId());
                             }
                             else
                             {
-                                worldObject.MoveObject(position, entry.Value.heading);
+                                worldObject.MoveObject(position, entry.Value.GetHeading());
                             }
                         }
                     }
@@ -171,26 +159,26 @@ public class WorldManager : MonoBehaviour
                 // Check self teleporting.
                 else if (entry.Key == 0)
                 {
-                    activeCharacter.transform.localPosition = position;
-                    activeCharacter.GetComponent<Rigidbody>().position = position;
+                    _activeCharacter.transform.localPosition = position;
+                    _activeCharacter.GetComponent<Rigidbody>().position = position;
                 }
                 // Request unknown object info from server.
                 else if (CalculateDistance(position) <= VISIBILITY_RADIUS)
                 {
                     NetworkManager.ChannelSend(new ObjectInfoRequest(entry.Key));
                     // Broadcast self position, in case player is not moving.
-                    NetworkManager.ChannelSend(new LocationUpdateRequest(MovementController.storedPosition.x, MovementController.storedPosition.y, MovementController.storedPosition.z, MovementController.storedRotation));
+                    NetworkManager.ChannelSend(new LocationUpdateRequest(MovementController.GetStoredPosition().x, MovementController.GetStoredPosition().y, MovementController.GetStoredPosition().z, MovementController.GetStoredRotation()));
                 }
 
-                ((IDictionary<long, MovementHolder>)moveQueue).Remove(entry.Key);
+                ((IDictionary<long, MovementHolder>)_moveQueue).Remove(entry.Key);
             }
 
             // Animate pending objects.
-            foreach (KeyValuePair<long, AnimationHolder> entry in animationQueue)
+            foreach (KeyValuePair<long, AnimationHolder> entry in _animationQueue)
             {
-                if (gameObjects.ContainsKey(entry.Key))
+                if (_gameObjects.ContainsKey(entry.Key))
                 {
-                    GameObject obj = gameObjects[entry.Key];
+                    GameObject obj = _gameObjects[entry.Key];
                     if (obj != null)
                     {
                         WorldObject worldObject = obj.GetComponent<WorldObject>();
@@ -198,21 +186,21 @@ public class WorldManager : MonoBehaviour
                         {
                             if (worldObject.GetDistance() <= VISIBILITY_RADIUS) // Object is in sight radius.
                             {
-                                worldObject.AnimateObject(entry.Value.velocityX, entry.Value.velocityZ, entry.Value.triggerJump, entry.Value.isInWater, entry.Value.isGrounded);
+                                worldObject.AnimateObject(entry.Value.GetVelocityX(), entry.Value.GetVelocityZ(), entry.Value.IsTriggerJump(), entry.Value.IsInWater(), entry.Value.IsGrounded());
                             }
                         }
                     }
                 }
 
-                ((IDictionary<long, AnimationHolder>)animationQueue).Remove(entry.Key);
+                ((IDictionary<long, AnimationHolder>)_animationQueue).Remove(entry.Key);
             }
 
             // Update pending characters.
-            foreach (KeyValuePair<long, CharacterDataHolder> entry in characterUpdateQueue)
+            foreach (KeyValuePair<long, CharacterDataHolder> entry in _characterUpdateQueue)
             {
-                if (gameObjects.ContainsKey(entry.Key))
+                if (_gameObjects.ContainsKey(entry.Key))
                 {
-                    GameObject obj = gameObjects[entry.Key];
+                    GameObject obj = _gameObjects[entry.Key];
                     if (obj != null)
                     {
                         WorldObject worldObject = obj.GetComponent<WorldObject>();
@@ -224,7 +212,7 @@ public class WorldManager : MonoBehaviour
                                 if (avatar != null)
                                 {
                                     // TODO: Manage more things than just item updates.
-                                    CharacterDataHolder oldData = worldObject.characterData;
+                                    CharacterDataHolder oldData = worldObject.GetCharacterData();
                                     CharacterDataHolder newData = entry.Value;
 
                                     int headItem = newData.GetHeadItem();
@@ -319,34 +307,84 @@ public class WorldManager : MonoBehaviour
                                     }
 
                                     // Update world object with new data.
-                                    worldObject.characterData = newData;
+                                    worldObject.SetCharacterData(newData);
                                 }
                             }
                         }
                     }
                 }
 
-                ((IDictionary<long, CharacterDataHolder>)characterUpdateQueue).Remove(entry.Key);
+                ((IDictionary<long, CharacterDataHolder>)_characterUpdateQueue).Remove(entry.Key);
             }
         }
+    }
+
+    public DynamicCharacterAvatar GetActiveCharacter()
+    {
+        return _activeCharacter;
+    }
+
+    public WorldObject GetTargetWorldObject()
+    {
+        return _targetWorldObject;
+    }
+
+    public bool IsPlayerInWater()
+    {
+        return _isPlayerInWater;
+    }
+
+    public void SetPlayerInWater(bool value)
+    {
+        _isPlayerInWater = value;
+    }
+
+    public bool IsPlayerOnTheGround()
+    {
+        return _isPlayerOnTheGround;
+    }
+
+    public void SetPlayerOnTheGround(bool value)
+    {
+        _isPlayerOnTheGround = value;
+    }
+
+    public void SetKickFromWorld(bool value)
+    {
+        _kickFromWorld = value;
+    }
+
+    public ConcurrentDictionary<long, GameObject> GetGameObjects()
+    {
+        return _gameObjects;
+    }
+
+    public ConcurrentDictionary<long, MovementHolder> GetMoveQueue()
+    {
+        return _moveQueue;
+    }
+
+    public ConcurrentDictionary<long, AnimationHolder> GetAnimationQueue()
+    {
+        return _animationQueue;
     }
 
     // Calculate distance between player and a Vector3 location.
     public double CalculateDistance(Vector3 vector)
     {
-        return Math.Pow(MovementController.storedPosition.x - vector.x, 2) + Math.Pow(MovementController.storedPosition.y - vector.y, 2) + Math.Pow(MovementController.storedPosition.z - vector.z, 2);
+        return Math.Pow(MovementController.GetStoredPosition().x - vector.x, 2) + Math.Pow(MovementController.GetStoredPosition().y - vector.y, 2) + Math.Pow(MovementController.GetStoredPosition().z - vector.z, 2);
     }
 
     public void UpdateObject(long objectId, CharacterDataHolder characterdata)
     {
-        lock (updateObjectLock) // Use lock to avoid adding duplicate gameObjects.
+        lock (UPDATE_OBJECT_LOCK) // Use lock to avoid adding duplicate gameObjects.
         {
             // Check for existing objects.
-            if (gameObjects.ContainsKey(objectId))
+            if (_gameObjects.ContainsKey(objectId))
             {
                 // Update object info.
-                ((IDictionary<long, CharacterDataHolder>)characterUpdateQueue).Remove(objectId);
-                characterUpdateQueue.TryAdd(objectId, characterdata);
+                ((IDictionary<long, CharacterDataHolder>)_characterUpdateQueue).Remove(objectId);
+                _characterUpdateQueue.TryAdd(objectId, characterdata);
                 return;
             }
 
@@ -357,10 +395,10 @@ public class WorldManager : MonoBehaviour
             }
 
             // Add placeholder to game object list.
-            gameObjects.GetOrAdd(objectId, (GameObject)null);
+            _gameObjects.GetOrAdd(objectId, (GameObject)null);
 
             // Queue creation.
-            CharacterManager.Instance.characterCreationQueue.TryAdd(objectId, characterdata);
+            CharacterManager.Instance.GetCharacterCreationQueue().TryAdd(objectId, characterdata);
         }
     }
 
@@ -369,69 +407,69 @@ public class WorldManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         // Destroy name text.
-        Destroy(obj.GetComponent<WorldObjectText>().nameMesh.gameObject);
+        Destroy(obj.GetComponent<WorldObjectText>().GetNameMesh().gameObject);
         // Finally destroy gameobject.
         Destroy(obj);
     }
 
     public void DeleteObject(long objectId)
     {
-        lock (updateMethodLock)
+        lock (UPDATE_METHOD_LOCK)
         {
-            if (!deleteQueue.Contains(objectId))
+            if (!_deleteQueue.Contains(objectId))
             {
-                deleteQueue.Add(objectId);
+                _deleteQueue.Add(objectId);
             }
         }
     }
 
     public void ExitWorld()
     {
-        exitingWorld = true;
-        if (activeCharacter != null)
+        _exitingWorld = true;
+        if (_activeCharacter != null)
         {
-            Destroy(activeCharacter.GetComponent<WorldObjectText>().nameMesh.gameObject);
-            Destroy(activeCharacter.gameObject);
+            Destroy(_activeCharacter.GetComponent<WorldObjectText>().GetNameMesh().gameObject);
+            Destroy(_activeCharacter.gameObject);
         }
-        isPlayerInWater = false;
-        isPlayerOnTheGround = false;
-        foreach (GameObject obj in gameObjects.Values)
+        _isPlayerInWater = false;
+        _isPlayerOnTheGround = false;
+        foreach (GameObject obj in _gameObjects.Values)
         {
             if (obj == null)
             {
                 continue;
             }
 
-            Destroy(obj.GetComponent<WorldObjectText>().nameMesh.gameObject);
+            Destroy(obj.GetComponent<WorldObjectText>().GetNameMesh().gameObject);
             Destroy(obj);
         }
-        CharacterManager.Instance.characterCreationQueue.Clear();
+        CharacterManager.Instance.GetCharacterCreationQueue().Clear();
     }
 
     public void SetTarget(WorldObject worldObject)
     {
         // Unset old target.
-        if (targetWorldObject != null)
+        if (_targetWorldObject != null)
         {
-            WorldObjectText previousObjectText = targetWorldObject.GetComponentInParent<WorldObjectText>();
+            WorldObjectText previousObjectText = _targetWorldObject.GetComponentInParent<WorldObjectText>();
             if (previousObjectText != null)
             {
-                previousObjectText.currentColor = WorldObjectText.DEFAULT_COLOR;
+                previousObjectText.SetCurrentColor(WorldObjectText.DEFAULT_COLOR);
             }
         }
 
         // Set new target.
-        targetWorldObject = worldObject;
-        if (targetWorldObject != null)
+        _targetWorldObject = worldObject;
+        if (_targetWorldObject != null)
         {
-            WorldObjectText worldObjectText = targetWorldObject.GetComponentInParent<WorldObjectText>();
+            WorldObjectText worldObjectText = _targetWorldObject.GetComponentInParent<WorldObjectText>();
             if (worldObjectText != null)
             {
-                worldObjectText.currentColor = WorldObjectText.SELECTED_COLOR;
+                worldObjectText.SetCurrentColor(WorldObjectText.SELECTED_COLOR);
             }
 
             // Send new target id to server.
-            NetworkManager.ChannelSend(new TargetUpdateRequest(targetWorldObject.objectId));
+            NetworkManager.ChannelSend(new TargetUpdateRequest(_targetWorldObject.GetObjectId()));
         }
         else // Target has been unset.
         {
@@ -439,6 +477,6 @@ public class WorldManager : MonoBehaviour
         }
 
         // Update UI target information.
-        StatusInformationManager.Instance.UpdateTargetInformation(targetWorldObject);
+        StatusInformationManager.Instance.UpdateTargetInformation(_targetWorldObject);
     }
 }

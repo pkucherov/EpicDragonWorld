@@ -16,7 +16,7 @@ public class AnimatorUpdate
         bool isInWater = packet.ReadByte() == 1;
         bool isGrounded = packet.ReadByte() == 1;
 
-        ((IDictionary<long, AnimationHolder>)WorldManager.Instance.animationQueue).Remove(objectId);
-        WorldManager.Instance.animationQueue.TryAdd(objectId, new AnimationHolder(velocityX, velocityZ, triggerJump, isInWater, isGrounded));
+        ((IDictionary<long, AnimationHolder>)WorldManager.Instance.GetAnimationQueue()).Remove(objectId);
+        WorldManager.Instance.GetAnimationQueue().TryAdd(objectId, new AnimationHolder(velocityX, velocityZ, triggerJump, isInWater, isGrounded));
     }
 }

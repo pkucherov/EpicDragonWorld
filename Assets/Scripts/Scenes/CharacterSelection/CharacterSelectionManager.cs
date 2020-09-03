@@ -12,20 +12,19 @@ public class CharacterSelectionManager : MonoBehaviour
 {
     public static CharacterSelectionManager Instance { get; private set; }
 
-    public TextMeshProUGUI textMessage;
-    public Button nextCharButton;
-    public Button previousCharButton;
-    public Button createCharButton;
-    public Button deleteCharButton;
-    public Button exitToLoginButton;
-    public Button enterWorldButton;
-    public TextMeshProUGUI characterName;
+    public TextMeshProUGUI _textMessage;
+    public Button _nextCharButton;
+    public Button _previousCharButton;
+    public Button _createCharButton;
+    public Button _deleteCharButton;
+    public Button _exitToLoginButton;
+    public Button _enterWorldButton;
+    public TextMeshProUGUI _characterName;
 
-    [HideInInspector]
-    public bool waitingServer;
-    private bool characterSelected = false;
-    private int characterSelectedSlot = 0;
-    private DynamicCharacterAvatar avatar;
+    private bool _waitingServer;
+    private bool _characterSelected = false;
+    private int _characterSelectedSlot = 0;
+    private DynamicCharacterAvatar _avatar;
 
     private void Start()
     {
@@ -50,65 +49,65 @@ public class CharacterSelectionManager : MonoBehaviour
         StartCoroutine(ExitToLoginScreen());
 
         // Show retrieving information message.
-        textMessage.text = "Retrieving character information.";
+        _textMessage.text = "Retrieving character information.";
 
         // Request info.
-        waitingServer = true;
+        _waitingServer = true;
         NetworkManager.ChannelSend(new CharacterSelectionInfoRequest());
         // Wait until server sends existing player data.
-        while (waitingServer)
+        while (_waitingServer)
         {
             // Make sure information from the server is received.
         }
 
         // Show last selected character.
-        if (MainManager.Instance.characterList.Count > 0)
+        if (MainManager.Instance.GetCharacterList().Count > 0)
         {
-            for (int i = 0; i < MainManager.Instance.characterList.Count; i++)
+            for (int i = 0; i < MainManager.Instance.GetCharacterList().Count; i++)
             {
                 // Get current character data.
-                MainManager.Instance.selectedCharacterData = (CharacterDataHolder)MainManager.Instance.characterList[i];
-                if (MainManager.Instance.selectedCharacterData.IsSelected() || i == MainManager.Instance.characterList.Count - 1)
+                MainManager.Instance.SetSelectedCharacterData(MainManager.Instance.GetCharacterList()[i]);
+                if (MainManager.Instance.GetSelectedCharacterData().IsSelected() || i == MainManager.Instance.GetCharacterList().Count - 1)
                 {
-                    avatar = CharacterManager.Instance.CreateCharacter(MainManager.Instance.selectedCharacterData, 8.28f, 0.1035156f, 20.222f, 180);
-                    characterName.text = MainManager.Instance.selectedCharacterData.GetName();
-                    characterSelectedSlot = i;
-                    characterSelected = true;
+                    _avatar = CharacterManager.Instance.CreateCharacter(MainManager.Instance.GetSelectedCharacterData(), 8.28f, 0.1035156f, 20.222f, 180);
+                    _characterName.text = MainManager.Instance.GetSelectedCharacterData().GetName();
+                    _characterSelectedSlot = i;
+                    _characterSelected = true;
                     break;
                 }
             }
         }
         else // In case of character deletion.
         {
-            MainManager.Instance.selectedCharacterData = null;
+            MainManager.Instance.SetSelectedCharacterData(null);
         }
 
         // Click listeners.
-        nextCharButton.onClick.AddListener(OnClickNextButton);
-        previousCharButton.onClick.AddListener(OnClickPreviousButton);
-        createCharButton.onClick.AddListener(OnClickCreateButton);
-        deleteCharButton.onClick.AddListener(OnClickDeleteButton);
-        exitToLoginButton.onClick.AddListener(OnClickExitButton);
-        enterWorldButton.onClick.AddListener(OnEnterWorldButton);
+        _nextCharButton.onClick.AddListener(OnClickNextButton);
+        _previousCharButton.onClick.AddListener(OnClickPreviousButton);
+        _createCharButton.onClick.AddListener(OnClickCreateButton);
+        _deleteCharButton.onClick.AddListener(OnClickDeleteButton);
+        _exitToLoginButton.onClick.AddListener(OnClickExitButton);
+        _enterWorldButton.onClick.AddListener(OnEnterWorldButton);
 
         // Hide retrieving information message.
-        if (!characterSelected)
+        if (!_characterSelected)
         {
-            textMessage.text = "Click the create button to make a new character.";
-            deleteCharButton.gameObject.SetActive(false);
-            Destroy(avatar);
+            _textMessage.text = "Click the create button to make a new character.";
+            _deleteCharButton.gameObject.SetActive(false);
+            Destroy(_avatar);
         }
         else
         {
-            enterWorldButton.Select(); // Be ready to enter via keyboard.
-            textMessage.text = "";
+            _enterWorldButton.Select(); // Be ready to enter via keyboard.
+            _textMessage.text = "";
         }
 
         // Hide previous and next buttons if caharcter count is less than 2.
-        if (MainManager.Instance.characterList.Count < 2)
+        if (MainManager.Instance.GetCharacterList().Count < 2)
         {
-            previousCharButton.gameObject.SetActive(false);
-            nextCharButton.gameObject.SetActive(false);
+            _previousCharButton.gameObject.SetActive(false);
+            _nextCharButton.gameObject.SetActive(false);
         }
     }
 
@@ -128,34 +127,39 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void OnClickExitButton()
     {
-        if (avatar != null)
+        if (_avatar != null)
         {
-            Destroy(avatar.gameObject);
+            Destroy(_avatar.gameObject);
         }
         MainManager.Instance.LoadScene(MainManager.LOGIN_SCENE);
     }
 
     private void OnClickCreateButton()
     {
-        if (avatar != null)
+        if (_avatar != null)
         {
-            Destroy(avatar.gameObject);
+            Destroy(_avatar.gameObject);
         }
         MainManager.Instance.LoadScene(MainManager.CHARACTER_CREATION_SCENE);
     }
 
     private void OnClickDeleteButton()
     {
-        if (characterSelected)
+        if (_characterSelected)
         {
-            ConfirmDialog.Instance.PlayerConfirm("Delete character " + MainManager.Instance.selectedCharacterData.GetName() + "?", 2);
+            ConfirmDialog.Instance.PlayerConfirm("Delete character " + MainManager.Instance.GetSelectedCharacterData().GetName() + "?", 2);
         }
+    }
+
+    public void SetWaitingServer(bool value)
+    {
+        _waitingServer = value;
     }
 
     public void DeleteCharacter()
     {
         // Get current character data.
-        CharacterDataHolder characterData = MainManager.Instance.selectedCharacterData;
+        CharacterDataHolder characterData = MainManager.Instance.GetSelectedCharacterData();
 
         // Return if no character is selected.
         if (characterData == null)
@@ -164,21 +168,21 @@ public class CharacterSelectionManager : MonoBehaviour
         }
 
         // Set text message to deleting character.
-        textMessage.text = "Deleting character " + characterData.GetName() + "...";
+        _textMessage.text = "Deleting character " + characterData.GetName() + "...";
 
         // Request info.
-        waitingServer = true;
+        _waitingServer = true;
         NetworkManager.ChannelSend(new CharacterDeletionRequest(characterData.GetSlot()));
 
         // Wait until server deletes the character.
-        while (waitingServer)
+        while (_waitingServer)
         {
             // Make sure server has deleted the character.
         }
 
-        if (characterSelected)
+        if (_characterSelected)
         {
-            Destroy(avatar.gameObject);
+            Destroy(_avatar.gameObject);
         }
 
         // Reload everything.
@@ -187,46 +191,46 @@ public class CharacterSelectionManager : MonoBehaviour
 
     private void OnClickNextButton()
     {
-        if (MainManager.Instance.selectedCharacterData == null || MainManager.Instance.characterList.Count <= 1)
+        if (MainManager.Instance.GetSelectedCharacterData() == null || MainManager.Instance.GetCharacterList().Count <= 1)
         {
             return;
         }
-        if (characterSelectedSlot >= MainManager.Instance.characterList.Count - 1)
+        if (_characterSelectedSlot >= MainManager.Instance.GetCharacterList().Count - 1)
         {
-            characterSelectedSlot = -1;
+            _characterSelectedSlot = -1;
         }
-        characterSelectedSlot++;
-        MainManager.Instance.selectedCharacterData = (CharacterDataHolder)MainManager.Instance.characterList[characterSelectedSlot];
-        characterName.text = MainManager.Instance.selectedCharacterData.GetName();
-        NetworkManager.ChannelSend(new CharacterSelectUpdate(characterSelectedSlot));
-        Destroy(avatar.gameObject);
-        avatar = CharacterManager.Instance.CreateCharacter(MainManager.Instance.selectedCharacterData, 8.28f, 0.1035156f, 20.222f, 180);
+        _characterSelectedSlot++;
+        MainManager.Instance.SetSelectedCharacterData(MainManager.Instance.GetCharacterList()[_characterSelectedSlot]);
+        _characterName.text = MainManager.Instance.GetSelectedCharacterData().GetName();
+        NetworkManager.ChannelSend(new CharacterSelectUpdate(_characterSelectedSlot));
+        Destroy(_avatar.gameObject);
+        _avatar = CharacterManager.Instance.CreateCharacter(MainManager.Instance.GetSelectedCharacterData(), 8.28f, 0.1035156f, 20.222f, 180);
     }
 
     private void OnClickPreviousButton()
     {
-        if (MainManager.Instance.selectedCharacterData == null || MainManager.Instance.characterList.Count <= 1)
+        if (MainManager.Instance.GetSelectedCharacterData() == null || MainManager.Instance.GetCharacterList().Count <= 1)
         {
             return;
         }
-        if (characterSelectedSlot <= 0)
+        if (_characterSelectedSlot <= 0)
         {
-            characterSelectedSlot = MainManager.Instance.characterList.Count;
+            _characterSelectedSlot = MainManager.Instance.GetCharacterList().Count;
         }
-        characterSelectedSlot--;
-        MainManager.Instance.selectedCharacterData = (CharacterDataHolder)MainManager.Instance.characterList[characterSelectedSlot];
-        characterName.text = MainManager.Instance.selectedCharacterData.GetName();
-        NetworkManager.ChannelSend(new CharacterSelectUpdate(characterSelectedSlot));
-        Destroy(avatar.gameObject);
-        avatar = CharacterManager.Instance.CreateCharacter(MainManager.Instance.selectedCharacterData, 8.28f, 0.1035156f, 20.222f, 180);
+        _characterSelectedSlot--;
+        MainManager.Instance.SetSelectedCharacterData(MainManager.Instance.GetCharacterList()[_characterSelectedSlot]);
+        _characterName.text = MainManager.Instance.GetSelectedCharacterData().GetName();
+        NetworkManager.ChannelSend(new CharacterSelectUpdate(_characterSelectedSlot));
+        Destroy(_avatar.gameObject);
+        _avatar = CharacterManager.Instance.CreateCharacter(MainManager.Instance.GetSelectedCharacterData(), 8.28f, 0.1035156f, 20.222f, 180);
     }
 
     private void OnEnterWorldButton()
     {
-        if (characterSelected)
+        if (_characterSelected)
         {
-            characterSelected = false;
-            Destroy(avatar.gameObject);
+            _characterSelected = false;
+            Destroy(_avatar.gameObject);
             MainManager.Instance.LoadScene(MainManager.WORLD_SCENE);
         }
     }

@@ -13,13 +13,12 @@ public class CharacterManager : MonoBehaviour
 {
     public static CharacterManager Instance { get; private set; }
 
-    public DynamicCharacterAvatar avatarMale;
-    public DynamicCharacterAvatar avatarFemale;
+    public DynamicCharacterAvatar _avatarMale;
+    public DynamicCharacterAvatar _avatarFemale;
+    public List<string> _hairModelsMale = new List<string>();
+    public List<string> _hairModelsFemale = new List<string>();
 
-    public List<string> hairModelsMale = new List<string>();
-    public List<string> hairModelsFemale = new List<string>();
-
-    public ConcurrentDictionary<long, CharacterDataHolder> characterCreationQueue = new ConcurrentDictionary<long, CharacterDataHolder>();
+    private ConcurrentDictionary<long, CharacterDataHolder> _characterCreationQueue = new ConcurrentDictionary<long, CharacterDataHolder>();
 
     private void Start()
     {
@@ -34,29 +33,44 @@ public class CharacterManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.5f);
 
-            lock (WorldManager.updateObjectLock)
+            lock (WorldManager.UPDATE_OBJECT_LOCK)
             {
-                foreach (KeyValuePair<long, CharacterDataHolder> entry in characterCreationQueue)
+                foreach (KeyValuePair<long, CharacterDataHolder> entry in _characterCreationQueue)
                 {
                     // Object does not exist. Instantiate.
                     GameObject newObj = CreateCharacter(entry.Value).gameObject;
 
                     // Assign object id and name.
                     WorldObject worldObject = newObj.AddComponent<WorldObject>();
-                    worldObject.objectId = entry.Key;
-                    worldObject.characterData = entry.Value;
+                    worldObject.SetObjectId(entry.Key);
+                    worldObject.SetCharacterData(entry.Value);
                     WorldObjectText worldObjectText = newObj.AddComponent<WorldObjectText>();
-                    worldObjectText.worldObjectName = entry.Value.GetName();
-                    worldObjectText.attachedObject = newObj;
-                    worldObjectText.worldObject = worldObject;
+                    worldObjectText.SetWorldObjectName(entry.Value.GetName());
+                    worldObjectText.SetAttachedObject(newObj);
+                    worldObjectText.SetWorldObject(worldObject);
 
-                    ((IDictionary<long, GameObject>)WorldManager.Instance.gameObjects).Remove(entry.Key);
-                    WorldManager.Instance.gameObjects.TryAdd(entry.Key, newObj);
+                    ((IDictionary<long, GameObject>)WorldManager.Instance.GetGameObjects()).Remove(entry.Key);
+                    WorldManager.Instance.GetGameObjects().TryAdd(entry.Key, newObj);
 
-                    ((IDictionary<long, CharacterDataHolder>)characterCreationQueue).Remove(entry.Key);
+                    ((IDictionary<long, CharacterDataHolder>)_characterCreationQueue).Remove(entry.Key);
                 }
             }
         }
+    }
+
+    public ConcurrentDictionary<long, CharacterDataHolder> GetCharacterCreationQueue()
+    {
+        return _characterCreationQueue;
+    }
+
+    public List<string> GetHairModelsMale()
+    {
+        return _hairModelsMale;
+    }
+
+    public List<string> GetHairModelsFemale()
+    {
+        return _hairModelsFemale;
     }
 
     public DynamicCharacterAvatar CreateCharacter(CharacterDataHolder characterData)
@@ -68,7 +82,7 @@ public class CharacterManager : MonoBehaviour
     {
         // Setting race on Instantiate, because even we set it at CustomizeCharacterAppearance, we could not mount items for female characters.
         Vector3 newPosition = new Vector3(posX, posY, posZ);
-        DynamicCharacterAvatar avatarTemplate = characterData.GetRace() == 0 ? avatarMale : avatarFemale;
+        DynamicCharacterAvatar avatarTemplate = characterData.GetRace() == 0 ? _avatarMale : _avatarFemale;
         DynamicCharacterAvatar newAvatar = Instantiate(avatarTemplate, newPosition, Quaternion.identity) as DynamicCharacterAvatar;
 
         // Set heading early, to avoid inconsistencies with template heading that are
@@ -113,7 +127,7 @@ public class CharacterManager : MonoBehaviour
             newAvatar.ChangeRace("HumanMaleDCS");
             if (hairType != 0)
             {
-                newAvatar.SetSlot("Hair", hairModelsMale[characterData.GetHairType()]);
+                newAvatar.SetSlot("Hair", _hairModelsMale[characterData.GetHairType()]);
             }
         }
         if (characterData.GetRace() == 1)
@@ -121,7 +135,7 @@ public class CharacterManager : MonoBehaviour
             newAvatar.ChangeRace("HumanFemaleDCS");
             if (hairType != 0)
             {
-                newAvatar.SetSlot("Hair", hairModelsFemale[characterData.GetHairType()]);
+                newAvatar.SetSlot("Hair", _hairModelsFemale[characterData.GetHairType()]);
             }
         }
 
@@ -220,7 +234,7 @@ public class CharacterManager : MonoBehaviour
                 // Find left hand bone.
                 GameObject boneObjL = umaData.GetBoneGameObject("LeftHand");
                 // Create the item.
-                GameObject newObjL = Instantiate(ItemData.Instance.itemPrefabs[item.GetPrefabId()]);
+                GameObject newObjL = Instantiate(ItemData.Instance.GetItemPrefab(item.GetPrefabId()));
                 newObjL.name = "LeftHandItem";
                 newObjL.transform.SetParent(boneObjL.transform, false);
                 if (isMale)
@@ -242,7 +256,7 @@ public class CharacterManager : MonoBehaviour
                 // Find right hand bone.
                 GameObject boneObjR = umaData.GetBoneGameObject("RightHand");
                 // Create the item.
-                GameObject newObjR = Instantiate(ItemData.Instance.itemPrefabs[item.GetPrefabId()]);
+                GameObject newObjR = Instantiate(ItemData.Instance.GetItemPrefab(item.GetPrefabId()));
                 newObjR.name = "RightHandItem";
                 newObjR.transform.SetParent(boneObjR.transform, false);
                 if (isMale)
@@ -264,7 +278,7 @@ public class CharacterManager : MonoBehaviour
                 // Find right hand bone.
                 GameObject boneObjTH = umaData.GetBoneGameObject("RightHand");
                 // Create the item.
-                GameObject newObjTH = Instantiate(ItemData.Instance.itemPrefabs[item.GetPrefabId()]);
+                GameObject newObjTH = Instantiate(ItemData.Instance.GetItemPrefab(item.GetPrefabId()));
                 newObjTH.name = "TwoHandItem";
                 boneObjTH.transform.SetParent(boneObjTH.transform, false);
                 if (isMale)

@@ -14,7 +14,7 @@ public class LocationUpdate
         float posZ = packet.ReadFloat();
         float heading = packet.ReadFloat();
 
-        ((IDictionary<long, MovementHolder>)WorldManager.Instance.moveQueue).Remove(objectId);
-        WorldManager.Instance.moveQueue.TryAdd(objectId, new MovementHolder(posX, posY, posZ, heading));
+        ((IDictionary<long, MovementHolder>)WorldManager.Instance.GetMoveQueue()).Remove(objectId);
+        WorldManager.Instance.GetMoveQueue().TryAdd(objectId, new MovementHolder(posX, posY, posZ, heading));
     }
 }
