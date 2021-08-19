@@ -6,7 +6,6 @@ Unity3D client that connects with .NET Core server.
 - Load and save configurations to files.
 - Connect to .NET Core server.
 - Packet communication.
-- Network encryption.
 - Music manager.
 - Server authentication.
 - Support for UMA.

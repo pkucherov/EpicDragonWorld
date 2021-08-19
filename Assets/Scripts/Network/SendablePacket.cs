@@ -102,7 +102,7 @@ public class SendablePacket
     public byte[] GetSendableBytes()
     {
         // Encrypt bytes.
-        byte[] encryptedBytes = Encryption.Process(_memoryStream.ToArray()); // Encrypt
+        byte[] encryptedBytes = _memoryStream.ToArray();
         int size = encryptedBytes.Length;
 
         // Create two bytes for length (short - max length 32767).
