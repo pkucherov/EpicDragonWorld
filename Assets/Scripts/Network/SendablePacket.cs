@@ -15,6 +15,11 @@ public class SendablePacket
         _memoryStream = new MemoryStream();
     }
 
+    public void WriteBoolean(bool value)
+    {
+        _memoryStream.WriteByte((byte)(value ? 1 : 0));
+    }
+
     public void WriteString(string value)
     {
         if (value != null)
@@ -77,33 +82,21 @@ public class SendablePacket
         return *(int*)(&fvalue);
     }
 
-    public void WriteFloat(float fvalue)
+    public void WriteFloat(float value)
     {
-        long value = SingleToInt32Bits(fvalue);
-        _memoryStream.WriteByte((byte)value);
-        _memoryStream.WriteByte((byte)(value >> 8));
-        _memoryStream.WriteByte((byte)(value >> 16));
-        _memoryStream.WriteByte((byte)(value >> 24));
+        WriteInt(SingleToInt32Bits(value));
     }
 
-    public void WriteDouble(double dvalue)
+    public void WriteDouble(double value)
     {
-        long value = BitConverter.DoubleToInt64Bits(dvalue);
-        _memoryStream.WriteByte((byte)value);
-        _memoryStream.WriteByte((byte)(value >> 8));
-        _memoryStream.WriteByte((byte)(value >> 16));
-        _memoryStream.WriteByte((byte)(value >> 24));
-        _memoryStream.WriteByte((byte)(value >> 32));
-        _memoryStream.WriteByte((byte)(value >> 40));
-        _memoryStream.WriteByte((byte)(value >> 48));
-        _memoryStream.WriteByte((byte)(value >> 56));
+        WriteLong(BitConverter.DoubleToInt64Bits(value));
     }
 
     public byte[] GetSendableBytes()
     {
-        // Encrypt bytes.
-        byte[] encryptedBytes = _memoryStream.ToArray();
-        int size = encryptedBytes.Length;
+        // Get array of bytes.
+        byte[] byteArray = _memoryStream.ToArray();
+        int size = byteArray.Length;
 
         // Create two bytes for length (short - max length 32767).
         byte[] lengthBytes = new byte[2];
@@ -113,7 +106,7 @@ public class SendablePacket
         // Join bytes.
         byte[] result = new byte[size + 2];
         Array.Copy(lengthBytes, 0, result, 0, 2);
-        Array.Copy(encryptedBytes, 0, result, 2, size);
+        Array.Copy(byteArray, 0, result, 2, size);
 
         // Return the data.
         return result;

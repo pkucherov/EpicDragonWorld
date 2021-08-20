@@ -15,6 +15,11 @@ public class ReceivablePacket
         _memoryStream = new MemoryStream(bytes);
     }
 
+    public bool ReadBoolean()
+    {
+        return ReadByte() != 0;
+    }
+
     public string ReadString()
     {
         // Since we use short value maximum byte size for strings is 32767.
