@@ -20,46 +20,6 @@ public class NetworkManager
     private static bool _forcedDisconnection = false;
     private static bool _unexpectedDisconnection = false;
 
-    public static bool IsForcedDisconnection()
-    {
-        return _forcedDisconnection;
-    }
-
-    public static void SetForcedDisconnection(bool value)
-    {
-        _forcedDisconnection = value;
-    }
-
-    public static bool IsUnexpectedDisconnection()
-    {
-        return _unexpectedDisconnection;
-    }
-
-    public static void SetUnexpectedDisconnection(bool value)
-    {
-        _unexpectedDisconnection = value;
-    }
-
-    private void OnApplicationQuit()
-    {
-        DisconnectFromServer();
-    }
-
-    public static void DisconnectFromServer()
-    {
-        if (_socket != null && _socket.Connected)
-        {
-            _socket.Close();
-        }
-        _socketConnected = false;
-        _readThreadStarted = false;
-
-        // Clear stored variables.
-        MainManager.Instance.SetAccountName(null);
-        MainManager.Instance.SetCharacterList(null);
-        MainManager.Instance.SetSelectedCharacterData(null);
-    }
-
     // Best to call this only once per login attempt.
     public static bool ConnectToServer()
     {
@@ -139,7 +99,7 @@ public class NetworkManager
             byte[] buffer = packet.GetSendableBytes();
             SocketAsyncEventArgs args = new SocketAsyncEventArgs();
             args.SetBuffer(buffer, 0, buffer.Length);
-            
+
             try
             {
                 _socket.SendAsync(args);
@@ -166,6 +126,46 @@ public class NetworkManager
     {
         // return !(socket.Poll(1000, SelectMode.SelectRead) && socket.Available == 0);
         return _socketConnected && _socket != null && _socket.Connected;
+    }
+
+    public static void DisconnectFromServer()
+    {
+        if (_socket != null && _socket.Connected)
+        {
+            _socket.Close();
+        }
+        _socketConnected = false;
+        _readThreadStarted = false;
+
+        // Clear stored variables.
+        MainManager.Instance.SetAccountName(null);
+        MainManager.Instance.SetCharacterList(null);
+        MainManager.Instance.SetSelectedCharacterData(null);
+    }
+
+    private void OnApplicationQuit()
+    {
+        DisconnectFromServer();
+    }
+
+    public static bool IsForcedDisconnection()
+    {
+        return _forcedDisconnection;
+    }
+
+    public static void SetForcedDisconnection(bool value)
+    {
+        _forcedDisconnection = value;
+    }
+
+    public static bool IsUnexpectedDisconnection()
+    {
+        return _unexpectedDisconnection;
+    }
+
+    public static void SetUnexpectedDisconnection(bool value)
+    {
+        _unexpectedDisconnection = value;
     }
 
     // Dummy method to prevent console warning from UMA.
