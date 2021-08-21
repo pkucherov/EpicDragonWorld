@@ -1,10 +1,10 @@
-# Epic Dragon World Client
-Unity3D client that connects with .NET Core server.
+# Epic Dragon World
+Game client that connects with JMMOS.
 
 ## Progress
 - Start client with command line arguments.
 - Load and save configurations to files.
-- Connect to .NET Core server.
+- Connect to Java server.
 - Packet communication.
 - Music manager.
 - Server authentication.
