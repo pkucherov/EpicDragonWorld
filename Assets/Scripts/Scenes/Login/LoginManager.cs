@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,8 +70,25 @@ public class LoginManager : MonoBehaviour
         // One time opperations.
         if (!MainManager.Instance.IsInitialized())
         {
-            // In case game started with command line arguments.
-            // Example: EpicDragonWorld -account peter -password 12345
+            // Example using command line arguments.
+            // EpicDragonWorld -ip 127.0.0.1 -port 5055 -account peter -password 12345
+
+            // Arguments can be used individually as bellow.
+            // EpicDragonWorld -ip 127.0.0.1
+            // Or
+            // EpicDragonWorld -ip 127.0.0.1 -account peter -password 12345
+
+            // Process command line arguments.
+            string ip = CommandLineArguments.Get("-ip");
+            if (ip != null)
+            {
+                NetworkConfigurations.SERVER_IP = ip;
+            }
+            string port = CommandLineArguments.Get("-port");
+            if (port != null && int.TryParse(port, out int portNumber))
+            {
+                NetworkConfigurations.SERVER_PORT = portNumber;
+            }
             string account = CommandLineArguments.Get("-account");
             if (account != null)
             {
@@ -81,15 +99,25 @@ public class LoginManager : MonoBehaviour
             {
                 _passwordField.text = password;
             }
+
             // Attempt to auto connect when possible.
             if (account != null && password != null)
             {
-                OnButtonLoginClick();
+                StartCoroutine(AttemptAutoLogin());
             }
         }
 
         // At this point client has initialized.
         MainManager.Instance.SetInitialized(true);
+    }
+
+    private IEnumerator AttemptAutoLogin()
+    {
+        // Wait fot scene to complete Start, so it can properly be unloaded.
+        yield return new WaitForSeconds(0.001f);
+
+        // Emulate clicking the login button.
+        OnButtonLoginClick();
     }
 
     public void SetStatus(int value)
