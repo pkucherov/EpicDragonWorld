@@ -63,7 +63,11 @@ public class ConfirmDialog : MonoBehaviour
         switch (_confirmDialogId)
         {
             case 1:
-                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                #if UNITY_EDITOR
+                    UnityEditor.EditorApplication.isPlaying = false;
+                #else
+                    System.Diagnostics.Process.GetCurrentProcess().Kill();
+                #endif
                 break;
 
             case 2:
