@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using TMPro;
-using UMA.CharacterSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,7 +23,7 @@ public class CharacterSelectionManager : MonoBehaviour
     private bool _waitingServer;
     private bool _characterSelected = false;
     private int _characterSelectedSlot = 0;
-    private DynamicCharacterAvatar _avatar;
+    private GameObject _avatar;
 
     private void Start()
     {

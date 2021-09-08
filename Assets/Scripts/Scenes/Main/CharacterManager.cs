@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using UMA;
-using UMA.CharacterSystem;
 using UnityEngine;
 
 /**
@@ -13,8 +11,8 @@ public class CharacterManager : MonoBehaviour
 {
     public static CharacterManager Instance { get; private set; }
 
-    public DynamicCharacterAvatar _avatarMale;
-    public DynamicCharacterAvatar _avatarFemale;
+    public List<GameObject> _avatarsMale = new List<GameObject>();
+    public List<GameObject> _avatarsFemale = new List<GameObject>();
     public List<string> _hairModelsMale = new List<string>();
     public List<string> _hairModelsFemale = new List<string>();
 
@@ -73,24 +71,21 @@ public class CharacterManager : MonoBehaviour
         return _hairModelsFemale;
     }
 
-    public DynamicCharacterAvatar CreateCharacter(CharacterDataHolder characterData)
+    public GameObject CreateCharacter(CharacterDataHolder characterData)
     {
         return CreateCharacter(characterData, characterData.GetX(), characterData.GetY(), characterData.GetZ(), characterData.GetHeading());
     }
 
-    public DynamicCharacterAvatar CreateCharacter(CharacterDataHolder characterData, float posX, float posY, float posZ, float heading)
+    public GameObject CreateCharacter(CharacterDataHolder characterData, float posX, float posY, float posZ, float heading)
     {
         // Setting race on Instantiate, because even we set it at CustomizeCharacterAppearance, we could not mount items for female characters.
         Vector3 newPosition = new Vector3(posX, posY, posZ);
-        DynamicCharacterAvatar avatarTemplate = characterData.GetRace() == 0 ? _avatarMale : _avatarFemale;
-        DynamicCharacterAvatar newAvatar = Instantiate(avatarTemplate, newPosition, Quaternion.identity) as DynamicCharacterAvatar;
+        GameObject avatarTemplate = characterData.GetRace() == 0 ? _avatarsMale[0] : _avatarsFemale[0]; // TODO: [0]
+        GameObject newAvatar = Instantiate(avatarTemplate, newPosition, Quaternion.identity);
 
         // Set heading early, to avoid inconsistencies with template heading that are
         // sometimes visible before CustomizeCharacterAppearance starts on character selection scene.
         SetAvatarHeading(newAvatar, heading);
-
-        // Prevent UMA bone error.
-        newAvatar.BuildCharacter(false);
 
         // Add a new Capsule Collider to prevent falling.
         CapsuleCollider capsuleCollider = newAvatar.gameObject.AddComponent<CapsuleCollider>();
@@ -109,46 +104,46 @@ public class CharacterManager : MonoBehaviour
         return newAvatar;
     }
 
-    public IEnumerator CustomizeCharacterAppearance(CharacterDataHolder characterData, DynamicCharacterAvatar newAvatar)
+    public IEnumerator CustomizeCharacterAppearance(CharacterDataHolder characterData, GameObject newAvatar)
     {
         // Hide avatar until delay ends.
-        newAvatar.gameObject.SetActive(false);
+        //newAvatar.gameObject.SetActive(false);
 
         // Unfortunately UMA needs a small delay to initialize.
         yield return new WaitForSeconds(0.25f);
 
         // Delay ended. Show avatar.
-        newAvatar.gameObject.SetActive(true);
+        //newAvatar.gameObject.SetActive(true);
 
         // Customize character.
-        int hairType = characterData.GetHairType();
-        if (characterData.GetRace() == 0)
-        {
-            newAvatar.ChangeRace("HumanMaleDCS");
-            if (hairType != 0)
-            {
-                newAvatar.SetSlot("Hair", _hairModelsMale[characterData.GetHairType()]);
-            }
-        }
-        if (characterData.GetRace() == 1)
-        {
-            newAvatar.ChangeRace("HumanFemaleDCS");
-            if (hairType != 0)
-            {
-                newAvatar.SetSlot("Hair", _hairModelsFemale[characterData.GetHairType()]);
-            }
-        }
+        //int hairType = characterData.GetHairType();
+        //if (characterData.GetRace() == 0)
+        //{
+        //    newAvatar.ChangeRace("HumanMaleDCS");
+        //    if (hairType != 0)
+        //    {
+        //        newAvatar.SetSlot("Hair", _hairModelsMale[characterData.GetHairType()]);
+        //    }
+        //}
+        //if (characterData.GetRace() == 1)
+        //{
+        //    newAvatar.ChangeRace("HumanFemaleDCS");
+        //    if (hairType != 0)
+        //    {
+        //        newAvatar.SetSlot("Hair", _hairModelsFemale[characterData.GetHairType()]);
+        //    }
+        //}
 
         // Set colors.
-        newAvatar.SetColor("Hair", Util.IntToColor(characterData.GetHairColor()));
-        newAvatar.SetColor("Skin", Util.IntToColor(characterData.GetSkinColor()));
-        newAvatar.SetColor("Eyes", Util.IntToColor(characterData.GetEyeColor()));
-        newAvatar.UpdateColors(true);
+        //newAvatar.SetColor("Hair", Util.IntToColor(characterData.GetHairColor()));
+        //newAvatar.SetColor("Skin", Util.IntToColor(characterData.GetSkinColor()));
+        //newAvatar.SetColor("Eyes", Util.IntToColor(characterData.GetEyeColor()));
+        //newAvatar.UpdateColors(true);
 
-        Dictionary<string, DnaSetter> dna = newAvatar.GetDNA();
-        dna["height"].Set(characterData.GetHeight());
-        dna["belly"].Set(characterData.GetBelly());
-        newAvatar.BuildCharacter(false);
+        //Dictionary<string, DnaSetter> dna = newAvatar.GetDNA();
+        //dna["height"].Set(characterData.GetHeight());
+        //dna["belly"].Set(characterData.GetBelly());
+        //newAvatar.BuildCharacter(false);
 
         // Set visible equipable armor items.
         EquipItem(newAvatar, characterData.GetHeadItem());
@@ -165,19 +160,22 @@ public class CharacterManager : MonoBehaviour
         EquipItem(newAvatar, characterData.GetRightHandItem());
     }
 
-    private IEnumerator InitializeLocation(DynamicCharacterAvatar avatar, Vector3 position, float heading)
+    private IEnumerator InitializeLocation(GameObject avatar, Vector3 position, float heading)
     {
         // Following above CreateCharacter delay.
         yield return new WaitForSeconds(0.3f);
 
-        // Set position.
-        avatar.transform.position = position;
+        if (avatar != null)
+        {
+            // Set position.
+            avatar.transform.position = position;
 
-        // Set heading.
-        SetAvatarHeading(avatar, heading);
+            // Set heading.
+            SetAvatarHeading(avatar, heading);
+        }
     }
 
-    private void SetAvatarHeading(DynamicCharacterAvatar avatar, float heading)
+    private void SetAvatarHeading(GameObject avatar, float heading)
     {
         Quaternion curHeading = avatar.gameObject.transform.localRotation;
         Vector3 curvAngle = curHeading.eulerAngles;
@@ -186,7 +184,7 @@ public class CharacterManager : MonoBehaviour
         avatar.gameObject.transform.localRotation = curHeading;
     }
 
-    public void EquipItem(DynamicCharacterAvatar avatar, int id)
+    public void EquipItem(GameObject avatar, int id)
     {
         ItemTemplateHolder item = ItemData.GetItemTemplate(id);
         if (item == null || item.GetItemType() != ItemType.EQUIP)
@@ -194,205 +192,191 @@ public class CharacterManager : MonoBehaviour
             return;
         }
 
-        // UMAData must not be null, so wait until it is not.
-        UMAData umaData = null;
-        while (umaData == null)
-        {
-            umaData = avatar.gameObject.GetComponent<UMAData>();
-        }
+        //bool isMale = avatar.activeRace.name.Equals("HumanMaleDCS");
+        //switch (item.GetItemSlot())
+        //{
+        //    case ItemSlot.HEAD:
+        //        avatar.SetSlot("Helmet", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
+        //        avatar.BuildCharacter();
+        //        break;
+        
+        //    case ItemSlot.CHEST:
+        //        avatar.SetSlot("Chest", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
+        //        avatar.BuildCharacter();
+        //        break;
+        
+        //    case ItemSlot.LEGS:
+        //        avatar.SetSlot("Legs", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
+        //        avatar.BuildCharacter();
+        //        break;
 
-        bool isMale = avatar.activeRace.name.Equals("HumanMaleDCS");
-        switch (item.GetItemSlot())
-        {
-            case ItemSlot.HEAD:
-                avatar.SetSlot("Helmet", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
-                avatar.BuildCharacter();
-                break;
+        //    case ItemSlot.HANDS:
+        //        avatar.SetSlot("Hands", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
+        //        avatar.BuildCharacter();
+        //        break;
 
-            case ItemSlot.CHEST:
-                avatar.SetSlot("Chest", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
-                avatar.BuildCharacter();
-                break;
+        //    case ItemSlot.FEET:
+        //        avatar.SetSlot("Feet", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
+        //        avatar.BuildCharacter();
+        //        break;
 
-            case ItemSlot.LEGS:
-                avatar.SetSlot("Legs", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
-                avatar.BuildCharacter();
-                break;
+        //    case ItemSlot.LEFT_HAND:
+        //        UnEquipItem(avatar, ItemSlot.LEFT_HAND);
+        //        // Find left hand bone.
+        //        GameObject boneObjL = umaData.GetBoneGameObject("LeftHand");
+        //        // Create the item.
+        //        GameObject newObjL = Instantiate(ItemData.Instance.GetItemPrefab(item.GetPrefabId()));
+        //        newObjL.name = "LeftHandItem";
+        //        newObjL.transform.SetParent(boneObjL.transform, false);
+        //        if (isMale)
+        //        {
+        //            newObjL.transform.localPosition = item.GetPositionMale();
+        //            newObjL.transform.localRotation = item.GetRotationMale();
+        //            newObjL.transform.localScale = item.GetScaleMale();
+        //        }
+        //        else
+        //        {
+        //            newObjL.transform.localPosition = item.GetPositionFemale();
+        //            newObjL.transform.localRotation = item.GetRotationFemale();
+        //            newObjL.transform.localScale = item.GetScaleFemale();
+        //        }
+        //        break;
 
-            case ItemSlot.HANDS:
-                avatar.SetSlot("Hands", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
-                avatar.BuildCharacter();
-                break;
+        //    case ItemSlot.RIGHT_HAND:
+        //        UnEquipItem(avatar, ItemSlot.RIGHT_HAND);
+        //        // Find right hand bone.
+        //        GameObject boneObjR = umaData.GetBoneGameObject("RightHand");
+        //        // Create the item.
+        //        GameObject newObjR = Instantiate(ItemData.Instance.GetItemPrefab(item.GetPrefabId()));
+        //        newObjR.name = "RightHandItem";
+        //        newObjR.transform.SetParent(boneObjR.transform, false);
+        //        if (isMale)
+        //        {
+        //            newObjR.transform.localPosition = item.GetPositionMale();
+        //            newObjR.transform.localRotation = item.GetRotationMale();
+        //            newObjR.transform.localScale = item.GetScaleMale();
+        //        }
+        //        else
+        //        {
+        //            newObjR.transform.localPosition = item.GetPositionFemale();
+        //            newObjR.transform.localRotation = item.GetRotationFemale();
+        //            newObjR.transform.localScale = item.GetScaleFemale();
+        //        }
+        //        break;
 
-            case ItemSlot.FEET:
-                avatar.SetSlot("Feet", isMale ? item.GetRecipeMale() : item.GetRecipeFemale());
-                avatar.BuildCharacter();
-                break;
-
-            case ItemSlot.LEFT_HAND:
-                UnEquipItem(avatar, ItemSlot.LEFT_HAND);
-                // Find left hand bone.
-                GameObject boneObjL = umaData.GetBoneGameObject("LeftHand");
-                // Create the item.
-                GameObject newObjL = Instantiate(ItemData.Instance.GetItemPrefab(item.GetPrefabId()));
-                newObjL.name = "LeftHandItem";
-                newObjL.transform.SetParent(boneObjL.transform, false);
-                if (isMale)
-                {
-                    newObjL.transform.localPosition = item.GetPositionMale();
-                    newObjL.transform.localRotation = item.GetRotationMale();
-                    newObjL.transform.localScale = item.GetScaleMale();
-                }
-                else
-                {
-                    newObjL.transform.localPosition = item.GetPositionFemale();
-                    newObjL.transform.localRotation = item.GetRotationFemale();
-                    newObjL.transform.localScale = item.GetScaleFemale();
-                }
-                break;
-
-            case ItemSlot.RIGHT_HAND:
-                UnEquipItem(avatar, ItemSlot.RIGHT_HAND);
-                // Find right hand bone.
-                GameObject boneObjR = umaData.GetBoneGameObject("RightHand");
-                // Create the item.
-                GameObject newObjR = Instantiate(ItemData.Instance.GetItemPrefab(item.GetPrefabId()));
-                newObjR.name = "RightHandItem";
-                newObjR.transform.SetParent(boneObjR.transform, false);
-                if (isMale)
-                {
-                    newObjR.transform.localPosition = item.GetPositionMale();
-                    newObjR.transform.localRotation = item.GetRotationMale();
-                    newObjR.transform.localScale = item.GetScaleMale();
-                }
-                else
-                {
-                    newObjR.transform.localPosition = item.GetPositionFemale();
-                    newObjR.transform.localRotation = item.GetRotationFemale();
-                    newObjR.transform.localScale = item.GetScaleFemale();
-                }
-                break;
-
-            case ItemSlot.TWO_HAND:
-                UnEquipItem(avatar, ItemSlot.TWO_HAND);
-                // Find right hand bone.
-                GameObject boneObjTH = umaData.GetBoneGameObject("RightHand");
-                // Create the item.
-                GameObject newObjTH = Instantiate(ItemData.Instance.GetItemPrefab(item.GetPrefabId()));
-                newObjTH.name = "TwoHandItem";
-                boneObjTH.transform.SetParent(boneObjTH.transform, false);
-                if (isMale)
-                {
-                    boneObjTH.transform.localPosition = item.GetPositionMale();
-                    boneObjTH.transform.localRotation = item.GetRotationMale();
-                    boneObjTH.transform.localScale = item.GetScaleMale();
-                }
-                else
-                {
-                    boneObjTH.transform.localPosition = item.GetPositionFemale();
-                    boneObjTH.transform.localRotation = item.GetRotationFemale();
-                    boneObjTH.transform.localScale = item.GetScaleFemale();
-                }
-                break;
-        }
+        //    case ItemSlot.TWO_HAND:
+        //        UnEquipItem(avatar, ItemSlot.TWO_HAND);
+        //        // Find right hand bone.
+        //        GameObject boneObjTH = umaData.GetBoneGameObject("RightHand");
+        //        // Create the item.
+        //        GameObject newObjTH = Instantiate(ItemData.Instance.GetItemPrefab(item.GetPrefabId()));
+        //        newObjTH.name = "TwoHandItem";
+        //        boneObjTH.transform.SetParent(boneObjTH.transform, false);
+        //        if (isMale)
+        //        {
+        //            boneObjTH.transform.localPosition = item.GetPositionMale();
+        //            boneObjTH.transform.localRotation = item.GetRotationMale();
+        //            boneObjTH.transform.localScale = item.GetScaleMale();
+        //        }
+        //        else
+        //        {
+        //            boneObjTH.transform.localPosition = item.GetPositionFemale();
+        //            boneObjTH.transform.localRotation = item.GetRotationFemale();
+        //            boneObjTH.transform.localScale = item.GetScaleFemale();
+        //        }
+        //        break;
+        //}
     }
 
-    public void UnEquipItem(DynamicCharacterAvatar avatar, ItemSlot itemSlot)
+    public void UnEquipItem(GameObject avatar, ItemSlot itemSlot)
     {
-        // UMAData must not be null, so wait until it is not.
-        UMAData umaData = null;
-        while (umaData == null)
-        {
-            umaData = avatar.gameObject.GetComponent<UMAData>();
-        }
+        //switch (itemSlot)
+        //{
+        //    case ItemSlot.HEAD:
+        //        avatar.ClearSlot("Helmet");
+        //        avatar.BuildCharacter();
+        //        break;
+        
+        //    case ItemSlot.CHEST:
+        //        avatar.ClearSlot("Chest");
+        //        avatar.BuildCharacter();
+        //        break;
 
-        switch (itemSlot)
-        {
-            case ItemSlot.HEAD:
-                avatar.ClearSlot("Helmet");
-                avatar.BuildCharacter();
-                break;
+        //    case ItemSlot.LEGS:
+        //        avatar.ClearSlot("Legs");
+        //        avatar.BuildCharacter();
+        //        break;
 
-            case ItemSlot.CHEST:
-                avatar.ClearSlot("Chest");
-                avatar.BuildCharacter();
-                break;
+        //    case ItemSlot.HANDS:
+        //        avatar.ClearSlot("Hands");
+        //        avatar.BuildCharacter();
+        //        break;
 
-            case ItemSlot.LEGS:
-                avatar.ClearSlot("Legs");
-                avatar.BuildCharacter();
-                break;
+        //    case ItemSlot.FEET:
+        //        avatar.ClearSlot("Feet");
+        //        avatar.BuildCharacter();
+        //        break;
 
-            case ItemSlot.HANDS:
-                avatar.ClearSlot("Hands");
-                avatar.BuildCharacter();
-                break;
+        //    case ItemSlot.LEFT_HAND:
+        //        // Find left hand bone.
+        //        GameObject boneObjL = umaData.GetBoneGameObject("LeftHand");
+        //        // If previous item exists remove it.
+        //        Transform objTransformL = boneObjL.transform.Find("LeftHandItem");
+        //        if (objTransformL != null)
+        //        {
+        //            Destroy(objTransformL.gameObject);
+        //        }
+        //        // Find right hand bone.
+        //        GameObject boneObjLR = umaData.GetBoneGameObject("RightHand");
+        //        // If previous two hand item exists remove it.
+        //        Transform objTransformL2 = boneObjLR.transform.Find("TwoHandItem");
+        //        if (objTransformL2 != null)
+        //        {
+        //            Destroy(objTransformL2.gameObject);
+        //        }
+        //        break;
 
-            case ItemSlot.FEET:
-                avatar.ClearSlot("Feet");
-                avatar.BuildCharacter();
-                break;
+        //    case ItemSlot.RIGHT_HAND:
+        //        // Find right hand bone.
+        //        GameObject boneObjR = umaData.GetBoneGameObject("RightHand");
+        //        // If previous item exists remove it.
+        //        Transform objTransformR = boneObjR.transform.Find("RightHandItem");
+        //        if (objTransformR != null)
+        //        {
+        //            Destroy(objTransformR.gameObject);
+        //        }
+        //        // If previous two hand item exists remove it.
+        //        Transform objTransformR2 = boneObjR.transform.Find("TwoHandItem");
+        //        if (objTransformR2 != null)
+        //        {
+        //            Destroy(objTransformR2.gameObject);
+        //        }
+        //        break;
 
-            case ItemSlot.LEFT_HAND:
-                // Find left hand bone.
-                GameObject boneObjL = umaData.GetBoneGameObject("LeftHand");
-                // If previous item exists remove it.
-                Transform objTransformL = boneObjL.transform.Find("LeftHandItem");
-                if (objTransformL != null)
-                {
-                    Destroy(objTransformL.gameObject);
-                }
-                // Find right hand bone.
-                GameObject boneObjLR = umaData.GetBoneGameObject("RightHand");
-                // If previous two hand item exists remove it.
-                Transform objTransformL2 = boneObjLR.transform.Find("TwoHandItem");
-                if (objTransformL2 != null)
-                {
-                    Destroy(objTransformL2.gameObject);
-                }
-                break;
-
-            case ItemSlot.RIGHT_HAND:
-                // Find right hand bone.
-                GameObject boneObjR = umaData.GetBoneGameObject("RightHand");
-                // If previous item exists remove it.
-                Transform objTransformR = boneObjR.transform.Find("RightHandItem");
-                if (objTransformR != null)
-                {
-                    Destroy(objTransformR.gameObject);
-                }
-                // If previous two hand item exists remove it.
-                Transform objTransformR2 = boneObjR.transform.Find("TwoHandItem");
-                if (objTransformR2 != null)
-                {
-                    Destroy(objTransformR2.gameObject);
-                }
-                break;
-
-            case ItemSlot.TWO_HAND:
-                // Find left hand bone.
-                GameObject boneObjTHL = umaData.GetBoneGameObject("LeftHand");
-                // If previous left hand item exists remove it.
-                Transform objTransformTH1 = boneObjTHL.transform.Find("LeftHandItem");
-                if (objTransformTH1 != null)
-                {
-                    Destroy(objTransformTH1.gameObject);
-                }
-                // Find right hand bone.
-                GameObject boneObjTHR = umaData.GetBoneGameObject("RightHand");
-                // If previous right hand item exists remove it.
-                Transform objTransformTH2 = boneObjTHR.transform.Find("RightHandItem");
-                if (objTransformTH2 != null)
-                {
-                    Destroy(objTransformTH2.gameObject);
-                }
-                // If previous two hand item exists remove it.
-                Transform objTransformTH3 = boneObjTHR.transform.Find("TwoHandItem");
-                if (objTransformTH3 != null)
-                {
-                    Destroy(objTransformTH3.gameObject);
-                }
-                break;
-        }
+        //    case ItemSlot.TWO_HAND:
+        //        // Find left hand bone.
+        //        GameObject boneObjTHL = umaData.GetBoneGameObject("LeftHand");
+        //        // If previous left hand item exists remove it.
+        //        Transform objTransformTH1 = boneObjTHL.transform.Find("LeftHandItem");
+        //        if (objTransformTH1 != null)
+        //        {
+        //            Destroy(objTransformTH1.gameObject);
+        //        }
+        //        // Find right hand bone.
+        //        GameObject boneObjTHR = umaData.GetBoneGameObject("RightHand");
+        //        // If previous right hand item exists remove it.
+        //        Transform objTransformTH2 = boneObjTHR.transform.Find("RightHandItem");
+        //        if (objTransformTH2 != null)
+        //        {
+        //            Destroy(objTransformTH2.gameObject);
+        //        }
+        //        // If previous two hand item exists remove it.
+        //        Transform objTransformTH3 = boneObjTHR.transform.Find("TwoHandItem");
+        //        if (objTransformTH3 != null)
+        //        {
+        //            Destroy(objTransformTH3.gameObject);
+        //        }
+        //        break;
+        //}
     }
 }

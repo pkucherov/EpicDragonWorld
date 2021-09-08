@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UMA;
-using UMA.CharacterSystem;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
@@ -26,8 +23,7 @@ public class CharacterCreationManager : MonoBehaviour
 
     private int _creationResult;
     private bool _waitingServer;
-    private DynamicCharacterAvatar _avatar;
-    private Dictionary<string, DnaSetter> _dna;
+    private GameObject _avatar;
     private CharacterDataHolder _dataHolder;
     private CharacterDataHolder _dataHolderMale;
     private CharacterDataHolder _dataHolderFemale;
@@ -67,7 +63,6 @@ public class CharacterCreationManager : MonoBehaviour
 
         // Initial values.
         _avatar = CharacterManager.Instance.CreateCharacter(_dataHolderMale, 8.28f, 0.1035156f, 20.222f, 180);
-        _avatar.CharacterUpdated.AddListener(Updated);
         _heightSlider.onValueChanged.AddListener(HeightChange);
         _bellySlider.onValueChanged.AddListener(BellyChange);
 
@@ -85,129 +80,123 @@ public class CharacterCreationManager : MonoBehaviour
 
     public void SwitchGender(bool male)
     {
-        if (male && _avatar.activeRace.name != "HumanMaleDCS")
-        {
-            _dataHolder = _dataHolderMale;
-            Destroy(_avatar.gameObject);
-            _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
-            _avatar.CharacterUpdated.AddListener(Updated);
-        }
-        if (!male && _avatar.activeRace.name != "HumanFemaleDCS")
-        {
-            _dataHolder = _dataHolderFemale;
-            Destroy(_avatar.gameObject);
-            _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
-            _avatar.CharacterUpdated.AddListener(Updated);
-        }
+        //if (male && _avatar.activeRace.name != "HumanMaleDCS")
+        //{
+        //    _dataHolder = _dataHolderMale;
+        //    Destroy(_avatar.gameObject);
+        //    _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
+        //    _avatar.CharacterUpdated.AddListener(Updated);
+        //}
+        //if (!male && _avatar.activeRace.name != "HumanFemaleDCS")
+        //{
+        //    _dataHolder = _dataHolderFemale;
+        //    Destroy(_avatar.gameObject);
+        //    _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
+        //    _avatar.CharacterUpdated.AddListener(Updated);
+        //}
     }
 
-    void Updated(UMAData data)
-    {
-        _dna = _avatar.GetDNA();
-        _heightSlider.value = _dna["height"].Get();
-        _bellySlider.value = _dna["belly"].Get();
-    }
 
     public void HeightChange(float val)
     {
-        _dna["height"].Set(val);
-        _avatar.BuildCharacter();
+        //_dna["height"].Set(val);
+        //_avatar.BuildCharacter();
         _dataHolder.SetHeight(val);
     }
 
     public void BellyChange(float val)
     {
-        _dna["belly"].Set(val);
-        _avatar.BuildCharacter();
+        //_dna["belly"].Set(val);
+        //_avatar.BuildCharacter();
         _dataHolder.SetBelly(val);
     }
 
     public void ChangeSkinColor(Color color)
     {
-        _avatar.SetColor("Skin", color);
-        _avatar.UpdateColors(true);
+        //_avatar.SetColor("Skin", color);
+        //_avatar.UpdateColors(true);
         _dataHolder.SetSkinColor(Util.ColorToInt(color));
     }
 
     public void ChangeHairColor(Color color)
     {
-        _avatar.SetColor("Hair", color);
-        _avatar.UpdateColors(true);
+        //_avatar.SetColor("Hair", color);
+        //_avatar.UpdateColors(true);
         _dataHolder.SetHairColor(Util.ColorToInt(color));
     }
 
     public void ChangeEyesColor(Color color)
     {
-        _avatar.SetColor("Eyes", color);
-        _avatar.UpdateColors(true);
+        //_avatar.SetColor("Eyes", color);
+        //_avatar.UpdateColors(true);
         _dataHolder.SetEyeColor(Util.ColorToInt(color));
     }
 
     public void ChangeHair(bool plus)
     {
-        if (_avatar.activeRace.name == "HumanMaleDCS")
-        {
-            if (plus)
-            {
-                _currentHairMale++;
-            }
-            else
-            {
-                _currentHairMale--;
-            }
+        //if (_avatar.activeRace.name == "HumanMaleDCS")
+        //{
+        //    if (plus)
+        //    {
+        //        _currentHairMale++;
+        //    }
+        //    else
+        //    {
+        //        _currentHairMale--;
+        //    }
 
-            _currentHairMale = Mathf.Clamp(_currentHairMale, 0, CharacterManager.Instance.GetHairModelsMale().Count - 1);
+        //    _currentHairMale = Mathf.Clamp(_currentHairMale, 0, CharacterManager.Instance.GetHairModelsMale().Count - 1);
 
-            if (CharacterManager.Instance.GetHairModelsMale()[_currentHairMale] == "None")
-            {
-                _avatar.ClearSlot("Hair");
-            }
-            else
-            {
-                _avatar.SetSlot("Hair", CharacterManager.Instance.GetHairModelsMale()[_currentHairMale]);
-            }
+        //    if (CharacterManager.Instance.GetHairModelsMale()[_currentHairMale] == "None")
+        //    {
+        //        _avatar.ClearSlot("Hair");
+        //    }
+        //    else
+        //    {
+        //        _avatar.SetSlot("Hair", CharacterManager.Instance.GetHairModelsMale()[_currentHairMale]);
+        //    }
 
-            _dataHolder.SetHairType(_currentHairMale);
-        }
+        //    _dataHolder.SetHairType(_currentHairMale);
+        //}
 
-        if (_avatar.activeRace.name == "HumanFemaleDCS")
-        {
-            if (plus)
-            {
-                _currentHairFemale++;
-            }
-            else
-            {
-                _currentHairFemale--;
-            }
+        //if (_avatar.activeRace.name == "HumanFemaleDCS")
+        //{
+        //    if (plus)
+        //    {
+        //        _currentHairFemale++;
+        //    }
+        //    else
+        //    {
+        //        _currentHairFemale--;
+        //    }
 
-            _currentHairFemale = Mathf.Clamp(_currentHairFemale, 0, CharacterManager.Instance.GetHairModelsFemale().Count - 1);
+        //    _currentHairFemale = Mathf.Clamp(_currentHairFemale, 0, CharacterManager.Instance.GetHairModelsFemale().Count - 1);
 
-            if (CharacterManager.Instance.GetHairModelsFemale()[_currentHairFemale] == "None")
-            {
-                _avatar.ClearSlot("Hair");
-            }
-            else
-            {
-                _avatar.SetSlot("Hair", CharacterManager.Instance.GetHairModelsFemale()[_currentHairFemale]);
-            }
+        //    if (CharacterManager.Instance.GetHairModelsFemale()[_currentHairFemale] == "None")
+        //    {
+        //        _avatar.ClearSlot("Hair");
+        //    }
+        //    else
+        //    {
+        //        _avatar.SetSlot("Hair", CharacterManager.Instance.GetHairModelsFemale()[_currentHairFemale]);
+        //    }
 
-            _dataHolder.SetHairType(_currentHairFemale);
-        }
+        //    _dataHolder.SetHairType(_currentHairFemale);
+        //}
 
-        _avatar.BuildCharacter();
+        //_avatar.BuildCharacter();
     }
 
     public void CameraZoomIn()
     {
-        if (_avatar.activeRace.name == "HumanMaleDCS")
-        {
-            StartCoroutine(LerpFromTo(Camera.main.transform.position, new Vector3(8.3f, 1.568f, 19.491f), 1f));
-        }
-        if (_avatar.activeRace.name == "HumanFemaleDCS")
-        {
-            StartCoroutine(LerpFromTo(Camera.main.transform.position, new Vector3(8.3f, 1.472f, 19.48f), 1f));
-        }
+        //if (_avatar.activeRace.name == "HumanMaleDCS")
+        //{
+        //    StartCoroutine(LerpFromTo(Camera.main.transform.position, new Vector3(8.3f, 1.568f, 19.491f), 1f));
+        //}
+        //if (_avatar.activeRace.name == "HumanFemaleDCS")
+        //{
+        //    StartCoroutine(LerpFromTo(Camera.main.transform.position, new Vector3(8.3f, 1.472f, 19.48f), 1f));
+        //}
     }
 
     public void CameraZoomOut()
