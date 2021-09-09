@@ -6,7 +6,6 @@ using TMPro;
 /**
  * Author: Ilias Vlachos, Pantelis Andrianakis
  * Date: December 28th 2018
- * Source: https://www.youtube.com/watch?v=3uPrkH59Q0c
  */
 public class CharacterCreationManager : MonoBehaviour
 {
@@ -58,7 +57,7 @@ public class CharacterCreationManager : MonoBehaviour
         _dataHolderMale = new CharacterDataHolder();
         _dataHolderMale.SetRace(0);
         _dataHolderFemale = new CharacterDataHolder();
-        _dataHolderFemale.SetRace(1);
+        _dataHolderFemale.SetRace(3);
         _dataHolder = _dataHolderMale;
 
         // Initial values.
@@ -80,22 +79,27 @@ public class CharacterCreationManager : MonoBehaviour
 
     public void SwitchGender(bool male)
     {
-        //if (male && _avatar.activeRace.name != "HumanMaleDCS")
-        //{
-        //    _dataHolder = _dataHolderMale;
-        //    Destroy(_avatar.gameObject);
-        //    _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
-        //    _avatar.CharacterUpdated.AddListener(Updated);
-        //}
-        //if (!male && _avatar.activeRace.name != "HumanFemaleDCS")
-        //{
-        //    _dataHolder = _dataHolderFemale;
-        //    Destroy(_avatar.gameObject);
-        //    _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
-        //    _avatar.CharacterUpdated.AddListener(Updated);
-        //}
+        if (male)
+        {
+            // Check if current race is female.
+            if (_dataHolder.GetRace() >= 3 && _dataHolder.GetRace() <= 5)
+            {
+                Destroy(_avatar.gameObject);
+                _dataHolder = _dataHolderMale;
+                _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
+            }
+        }
+        else
+        {
+            // Check if current race is male.
+            if (_dataHolder.GetRace() >= 0 && _dataHolder.GetRace() <= 2)
+            {
+                Destroy(_avatar.gameObject);
+                _dataHolder = _dataHolderFemale;
+                _avatar = CharacterManager.Instance.CreateCharacter(_dataHolder, 8.28f, 0.1035156f, 20.222f, 180);
+            }
+        }
     }
-
 
     public void HeightChange(float val)
     {
