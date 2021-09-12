@@ -88,6 +88,11 @@ public class OptionsManager : MonoBehaviour
         SetFullscreen(_isFullscreenSave);
         _fullScreenToggle.isOn = _isFullscreenSave;
 
+        // Set screen resolution after load settings.
+        _resolutionIndexSave = _resolutionDropdown.value;
+        Resolution resolution = _resolutions[_resolutionDropdown.value];
+        Screen.SetResolution(resolution.width, resolution.height, _isFullscreenSave, resolution.refreshRate);
+
         float musicVolume = configReader.GetFloat(MUSIC_VOLUME_VALUE, 1);
         MasterVolume(musicVolume);
         _musicSlider.value = musicVolume;
