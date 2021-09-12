@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -19,6 +18,7 @@ public class MainManager : MonoBehaviour
     public static readonly string CHARACTER_CREATION_SCENE = "CharacterCreation";
     public static readonly string WORLD_SCENE = "World";
 
+    public Canvas _logoCanvas;
     public Canvas _loadingCanvas;
     public Slider _loadingBar;
     public TextMeshProUGUI _loadingPercentage;
@@ -35,10 +35,14 @@ public class MainManager : MonoBehaviour
     private void Start()
     {
         Instance = this;
-        // Loading canvas should be enabled.
-        _loadingCanvas.enabled = true;
+
+        // Canvases should be disabled.
+        _loadingCanvas.enabled = false;
+        _logoCanvas.enabled = false;
+
         // Initialize network manager.
         new NetworkManager();
+
         // Load first scene.
         LoadScene(LOGIN_SCENE);
     }
@@ -52,13 +56,23 @@ public class MainManager : MonoBehaviour
     {
         _loadingBar.value = 0;
         _loadingPercentage.text = "0%";
-        _loadingCanvas.enabled = true;
         AsyncOperation operation;
+
+        // Unload existing scene.
         if (!_lastLoadedScene.Equals(""))
         {
+            _loadingCanvas.enabled = true;
             operation = SceneManager.UnloadSceneAsync(_lastLoadedScene);
             yield return new WaitUntil(() => operation.isDone);
         }
+        else // First run.
+        {
+            // Show Epic Dragon Games logo.
+            _logoCanvas.enabled = true;
+            yield return new WaitForSeconds(3f);
+        }
+
+        // Additive load of scene.
         operation = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
         _musicManager.PlayMusic(SceneManager.GetSceneByName(scene).buildIndex);
         while (!operation.isDone)
@@ -69,7 +83,10 @@ public class MainManager : MonoBehaviour
             yield return null;
         }
         _lastLoadedScene = scene;
+
+        // Hide canvases after scene is loaded.
         _loadingCanvas.enabled = false;
+        _logoCanvas.enabled = false;
     }
 
     public bool IsInitialized()
