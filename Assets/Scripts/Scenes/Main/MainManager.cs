@@ -70,6 +70,9 @@ public class MainManager : MonoBehaviour
             // Show Epic Dragon Games logo.
             _logoCanvas.enabled = true;
             yield return new WaitForSeconds(3f);
+
+            // Enable sound (disabled at OptionsManager Start).
+            AudioListener.volume = 1;
         }
 
         // Additive load of scene.

@@ -99,6 +99,9 @@ public class OptionsManager : MonoBehaviour
         float sfxVolume = configReader.GetFloat(SFX_VOLUME_VALUE, 1);
         GameSFX(sfxVolume);
         _sfxSlider.value = sfxVolume;
+
+        // Mute sound.
+        AudioListener.volume = 0;
     }
 
     private void Update()
