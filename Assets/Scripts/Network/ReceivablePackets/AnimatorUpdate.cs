@@ -6,7 +6,7 @@
  */
 public class AnimatorUpdate
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         // Read data.
         long objectId = packet.ReadLong();

@@ -9,55 +9,55 @@ public class RecievablePacketHandler
         switch (packet.ReadShort())
         {
             case 1:
-                AccountAuthenticationResult.Notify(packet);
+                AccountAuthenticationResult.Process(packet);
                 break;
 
             case 2:
-                CharacterSelectionInfoResult.Notify(packet);
+                CharacterSelectionInfoResult.Process(packet);
                 break;
 
             case 3:
-                CharacterCreationResult.Notify(packet);
+                CharacterCreationResult.Process(packet);
                 break;
 
             case 4:
-                CharacterDeletionResult.Notify(packet);
+                CharacterDeletionResult.Process(packet);
                 break;
 
             case 5:
-                PlayerOptionsInformation.Notify(packet);
+                PlayerOptionsInformation.Process(packet);
                 break;
 
             case 6:
-                PlayerInformation.Notify(packet);
+                PlayerInformation.Process(packet);
                 break;
 
             case 7:
-                NpcInformation.Notify(packet);
+                NpcInformation.Process(packet);
                 break;
 
             case 8:
-                DeleteObject.Notify(packet);
+                DeleteObject.Process(packet);
                 break;
 
             case 9:
-                Logout.Notify(packet);
+                Logout.Process(packet);
                 break;
 
             case 10:
-                LocationUpdate.Notify(packet);
+                LocationUpdate.Process(packet);
                 break;
 
             case 11:
-                AnimatorUpdate.Notify(packet);
+                AnimatorUpdate.Process(packet);
                 break;
 
             case 12:
-                ChatResult.Notify(packet);
+                ChatResult.Process(packet);
                 break;
 
             case 13:
-                PlayerInventoryUpdate.Notify(packet);
+                PlayerInventoryUpdate.Process(packet);
                 break;
         }
     }

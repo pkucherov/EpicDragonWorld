@@ -4,7 +4,7 @@
  */
 public class Logout
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         // Used for kicked message.
         NetworkManager.SetForcedDisconnection(true);

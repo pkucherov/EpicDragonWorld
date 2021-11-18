@@ -4,7 +4,7 @@
  */
 public class NpcInformation
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         // Server information.
         long objectId = packet.ReadLong();

@@ -4,7 +4,7 @@
  */
 public class CharacterDeletionResult
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         CharacterSelectionManager.Instance.SetWaitingServer(false);
     }

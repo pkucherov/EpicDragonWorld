@@ -6,7 +6,7 @@
  */
 public class CharacterSelectionInfoResult
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         // Get player list size.
         int listSize = packet.ReadByte();

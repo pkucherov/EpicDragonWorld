@@ -4,7 +4,7 @@
  */
 public class PlayerInformation
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         long objectId = packet.ReadLong();
         CharacterDataHolder characterData = new CharacterDataHolder();

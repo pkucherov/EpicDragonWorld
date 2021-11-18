@@ -4,7 +4,7 @@
  */
 public class CharacterCreationResult
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         CharacterCreationManager.Instance.SetCreationResult(packet.ReadByte());
     }

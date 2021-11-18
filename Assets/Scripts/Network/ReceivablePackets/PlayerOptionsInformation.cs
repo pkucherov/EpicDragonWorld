@@ -6,7 +6,7 @@
  */
 public class PlayerOptionsInformation
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         OptionsManager.Instance.SetChatColorNormalIntValue(packet.ReadInt());
         OptionsManager.Instance.SetChatColorMessageIntValue(packet.ReadInt());

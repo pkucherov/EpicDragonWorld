@@ -6,7 +6,7 @@
  */
 public class PlayerInventoryUpdate
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         int itemCount = packet.ReadInt();
 

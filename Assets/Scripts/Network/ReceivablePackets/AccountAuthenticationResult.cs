@@ -4,7 +4,7 @@
  */
 public class AccountAuthenticationResult
 {
-    public static void Notify(ReceivablePacket packet)
+    public static void Process(ReceivablePacket packet)
     {
         LoginManager.Instance.SetStatus(packet.ReadByte());
     }
