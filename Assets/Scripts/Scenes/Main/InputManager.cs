@@ -159,7 +159,7 @@ public class InputManager : MonoBehaviour
         SetKeybind(39, KeyCode.None); // KEY_SHORTCUT_12_2
 
         // Update player options.
-        NetworkManager.ChannelSend(new PlayerOptionsUpdate());
+        NetworkManager.SendPacket(new PlayerOptionsUpdate());
     }
 
     public void RefreshButtonTextValues()

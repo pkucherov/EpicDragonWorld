@@ -25,6 +25,7 @@ public class MouseManager : MonoBehaviour
             {
                 return;
             }
+
             // Raycast new target.
             if (Physics.Raycast(CameraController.Instance.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition), out RaycastHit raycastHit))
             {

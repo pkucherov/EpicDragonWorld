@@ -253,7 +253,7 @@ public class CharacterCreationManager : MonoBehaviour
         _dataHolder.SetName(name);
 
         // Request character creation.
-        NetworkManager.ChannelSend(new CharacterCreationRequest(_dataHolder));
+        NetworkManager.SendPacket(new CharacterCreationRequest(_dataHolder));
 
         // Wait until server sends creation result.
         _waitingServer = true;

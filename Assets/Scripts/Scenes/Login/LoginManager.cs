@@ -171,7 +171,7 @@ public class LoginManager : MonoBehaviour
         // Authenticate.
         _messageText.text = "Authenticating...";
         _status = -1;
-        NetworkManager.ChannelSend(new AccountAuthenticationRequest(account, password));
+        NetworkManager.SendPacket(new AccountAuthenticationRequest(account, password));
 
         // Wait for result.
         _authenticating = true;

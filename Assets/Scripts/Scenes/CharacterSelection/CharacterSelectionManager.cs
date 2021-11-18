@@ -52,7 +52,7 @@ public class CharacterSelectionManager : MonoBehaviour
 
         // Request info.
         _waitingServer = true;
-        NetworkManager.ChannelSend(new CharacterSelectionInfoRequest());
+        NetworkManager.SendPacket(new CharacterSelectionInfoRequest());
         // Wait until server sends existing player data.
         while (_waitingServer)
         {
@@ -171,7 +171,7 @@ public class CharacterSelectionManager : MonoBehaviour
 
         // Request info.
         _waitingServer = true;
-        NetworkManager.ChannelSend(new CharacterDeletionRequest(characterData.GetSlot()));
+        NetworkManager.SendPacket(new CharacterDeletionRequest(characterData.GetSlot()));
 
         // Wait until server deletes the character.
         while (_waitingServer)
@@ -201,7 +201,7 @@ public class CharacterSelectionManager : MonoBehaviour
         _characterSelectedSlot++;
         MainManager.Instance.SetSelectedCharacterData(MainManager.Instance.GetCharacterList()[_characterSelectedSlot]);
         _characterName.text = MainManager.Instance.GetSelectedCharacterData().GetName();
-        NetworkManager.ChannelSend(new CharacterSelectUpdate(_characterSelectedSlot));
+        NetworkManager.SendPacket(new CharacterSelectUpdate(_characterSelectedSlot));
         Destroy(_avatar.gameObject);
         _avatar = CharacterManager.Instance.CreateCharacter(MainManager.Instance.GetSelectedCharacterData(), 8.28f, 0.1035156f, 20.222f, 180);
     }
@@ -219,7 +219,7 @@ public class CharacterSelectionManager : MonoBehaviour
         _characterSelectedSlot--;
         MainManager.Instance.SetSelectedCharacterData(MainManager.Instance.GetCharacterList()[_characterSelectedSlot]);
         _characterName.text = MainManager.Instance.GetSelectedCharacterData().GetName();
-        NetworkManager.ChannelSend(new CharacterSelectUpdate(_characterSelectedSlot));
+        NetworkManager.SendPacket(new CharacterSelectUpdate(_characterSelectedSlot));
         Destroy(_avatar.gameObject);
         _avatar = CharacterManager.Instance.CreateCharacter(MainManager.Instance.GetSelectedCharacterData(), 8.28f, 0.1035156f, 20.222f, 180);
     }

@@ -50,7 +50,7 @@ public class NetworkManager
                     _socketConnected = true;
                     // Start Receive thread.
                     _readThreadStarted = true;
-                    _readThread = new Thread(new ThreadStart(ChannelRead));
+                    _readThread = new Thread(new ThreadStart(ReadPacket));
                     _readThread.Start();
                 }
                 else
@@ -67,7 +67,7 @@ public class NetworkManager
         }
     }
 
-    private static void ChannelRead()
+    private static void ReadPacket()
     {
         byte[] bufferLength = new byte[2]; // We use 2 bytes for short value.
         byte[] bufferData;
@@ -90,7 +90,7 @@ public class NetworkManager
         }
     }
 
-    public static void ChannelSend(SendablePacket packet)
+    public static void SendPacket(SendablePacket packet)
     {
         if (SocketConnected())
         {

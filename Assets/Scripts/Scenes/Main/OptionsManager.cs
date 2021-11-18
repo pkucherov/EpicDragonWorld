@@ -136,7 +136,7 @@ public class OptionsManager : MonoBehaviour
                         case 2: // Success.
                             HideKeybindMenu();
                             // Update player options.
-                            NetworkManager.ChannelSend(new PlayerOptionsUpdate());
+                            NetworkManager.SendPacket(new PlayerOptionsUpdate());
                             break;
                     }
                 }
@@ -331,7 +331,7 @@ public class OptionsManager : MonoBehaviour
         }
 
         // Update player options.
-        NetworkManager.ChannelSend(new PlayerOptionsUpdate());
+        NetworkManager.SendPacket(new PlayerOptionsUpdate());
     }
 
     public void ResetChatColors()
@@ -350,7 +350,7 @@ public class OptionsManager : MonoBehaviour
     {
         _useChatTimestamps = !_useChatTimestamps;
         // Update player options.
-        NetworkManager.ChannelSend(new PlayerOptionsUpdate());
+        NetworkManager.SendPacket(new PlayerOptionsUpdate());
     }
 
     public void HideKeybindMenu()

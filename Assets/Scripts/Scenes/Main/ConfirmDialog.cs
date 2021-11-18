@@ -75,7 +75,7 @@ public class ConfirmDialog : MonoBehaviour
                 break;
 
             case 3:
-                NetworkManager.ChannelSend(new ExitWorldRequest());
+                NetworkManager.SendPacket(new ExitWorldRequest());
                 WorldManager.Instance.ExitWorld();
                 OptionsManager.Instance.GetOptionsCanvas().enabled = false;
                 MainManager.Instance.LoadScene(MainManager.CHARACTER_SELECTION_SCENE);

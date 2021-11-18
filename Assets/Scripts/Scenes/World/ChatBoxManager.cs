@@ -55,7 +55,7 @@ public class ChatBoxManager : MonoBehaviour
                 }
                 else
                 {
-                    NetworkManager.ChannelSend(new ChatRequest(_inputField.text));
+                    NetworkManager.SendPacket(new ChatRequest(_inputField.text));
                     string[] messageSplit = Regex.Replace(_inputField.text, @"\s+", " ").Trim().Split(' ');
                     if (messageSplit.Length > 2 && messageSplit[0].ToLower().Equals("/tell"))
                     {

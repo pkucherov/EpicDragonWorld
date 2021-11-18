@@ -67,7 +67,7 @@ public class WorldManager : MonoBehaviour
             StatusInformationManager.Instance.UpdatePlayerInformation();
 
             // Send enter world to Network.
-            NetworkManager.ChannelSend(new EnterWorldRequest(MainManager.Instance.GetSelectedCharacterData().GetName()));
+            NetworkManager.SendPacket(new EnterWorldRequest(MainManager.Instance.GetSelectedCharacterData().GetName()));
         }
     }
 
@@ -145,7 +145,7 @@ public class WorldManager : MonoBehaviour
                             if (CalculateDistance(position) > VISIBILITY_RADIUS) // Moved out of sight.
                             {
                                 // Broadcast self position, object out of sight.
-                                NetworkManager.ChannelSend(new LocationUpdateRequest(MovementController.GetStoredPosition().x, MovementController.GetStoredPosition().y, MovementController.GetStoredPosition().z, MovementController.GetStoredRotation()));
+                                NetworkManager.SendPacket(new LocationUpdateRequest(MovementController.GetStoredPosition().x, MovementController.GetStoredPosition().y, MovementController.GetStoredPosition().z, MovementController.GetStoredRotation()));
                                 _deleteQueue.Add(worldObject.GetObjectId());
                             }
                             else
@@ -164,9 +164,9 @@ public class WorldManager : MonoBehaviour
                 // Request unknown object info from server.
                 else if (CalculateDistance(position) <= VISIBILITY_RADIUS)
                 {
-                    NetworkManager.ChannelSend(new ObjectInfoRequest(entry.Key));
+                    NetworkManager.SendPacket(new ObjectInfoRequest(entry.Key));
                     // Broadcast self position, in case player is not moving.
-                    NetworkManager.ChannelSend(new LocationUpdateRequest(MovementController.GetStoredPosition().x, MovementController.GetStoredPosition().y, MovementController.GetStoredPosition().z, MovementController.GetStoredRotation()));
+                    NetworkManager.SendPacket(new LocationUpdateRequest(MovementController.GetStoredPosition().x, MovementController.GetStoredPosition().y, MovementController.GetStoredPosition().z, MovementController.GetStoredRotation()));
                 }
 
                 ((IDictionary<long, MovementHolder>)_moveQueue).Remove(entry.Key);
@@ -464,11 +464,11 @@ public class WorldManager : MonoBehaviour
             }
 
             // Send new target id to server.
-            NetworkManager.ChannelSend(new TargetUpdateRequest(_targetWorldObject.GetObjectId()));
+            NetworkManager.SendPacket(new TargetUpdateRequest(_targetWorldObject.GetObjectId()));
         }
         else // Target has been unset.
         {
-            NetworkManager.ChannelSend(new TargetUpdateRequest(-1));
+            NetworkManager.SendPacket(new TargetUpdateRequest(-1));
         }
 
         // Update UI target information.

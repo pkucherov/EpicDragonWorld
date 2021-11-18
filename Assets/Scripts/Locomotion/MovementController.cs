@@ -165,7 +165,7 @@ public class MovementController : MonoBehaviour
             || _storedPosition.y != transform.position.y //
             || _storedPosition.z != transform.position.z)
         {
-            NetworkManager.ChannelSend(new LocationUpdateRequest(transform.position.x, transform.position.y, transform.position.z, transform.localRotation.eulerAngles.y));
+            NetworkManager.SendPacket(new LocationUpdateRequest(transform.position.x, transform.position.y, transform.position.z, transform.localRotation.eulerAngles.y));
             _storedPosition = transform.position;
             _storedRotation = transform.localRotation.eulerAngles.y;
         }

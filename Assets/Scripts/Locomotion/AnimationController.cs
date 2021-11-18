@@ -141,7 +141,7 @@ public class AnimationController : MonoBehaviour
             || _lastWaterState != WorldManager.Instance.IsPlayerInWater() //
             || _lastGroundedState != WorldManager.Instance.IsPlayerOnTheGround())
         {
-            NetworkManager.ChannelSend(new AnimatorUpdateRequest(_currentVelocityX, _currentVelocityZ, _triggerJump, WorldManager.Instance.IsPlayerInWater(), WorldManager.Instance.IsPlayerOnTheGround()));
+            NetworkManager.SendPacket(new AnimatorUpdateRequest(_currentVelocityX, _currentVelocityZ, _triggerJump, WorldManager.Instance.IsPlayerInWater(), WorldManager.Instance.IsPlayerOnTheGround()));
             // Store last sent values.
             _previousVelocityX = _currentVelocityX;
             _previousVelocityZ = _currentVelocityZ;
