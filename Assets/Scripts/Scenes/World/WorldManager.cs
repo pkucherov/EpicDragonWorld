@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using UMA.CharacterSystem;
 using UnityEngine;
 
 /**
@@ -16,7 +17,7 @@ public class WorldManager : MonoBehaviour
     public static readonly object UPDATE_OBJECT_LOCK = new object();
     private static readonly object UPDATE_METHOD_LOCK = new object();
 
-    private GameObject _activeCharacter;
+    private DynamicCharacterAvatar _activeCharacter;
     private WorldObject _targetWorldObject;
     private bool _isPlayerInWater = false;
     private bool _isPlayerOnTheGround = false;
@@ -207,103 +208,107 @@ public class WorldManager : MonoBehaviour
                         {
                             if (worldObject.GetDistance() <= VISIBILITY_RADIUS) // Object is in sight radius.
                             {
-                                // TODO: Manage more things than just item updates.
-                                CharacterDataHolder oldData = worldObject.GetCharacterData();
-                                CharacterDataHolder newData = entry.Value;
-
-                                int headItem = newData.GetHeadItem();
-                                if (headItem != oldData.GetHeadItem())
+                                DynamicCharacterAvatar avatar = obj.GetComponent<DynamicCharacterAvatar>();
+                                if (avatar != null)
                                 {
-                                    if (headItem == 0)
-                                    {
-                                        CharacterManager.Instance.UnEquipItem(obj, ItemSlot.HEAD);
-                                    }
-                                    else
-                                    {
-                                        CharacterManager.Instance.EquipItem(obj, headItem);
-                                    }
-                                }
+                                    // TODO: Manage more things than just item updates.
+                                    CharacterDataHolder oldData = worldObject.GetCharacterData();
+                                    CharacterDataHolder newData = entry.Value;
 
-                                int chestItem = newData.GetChestItem();
-                                if (chestItem != oldData.GetChestItem())
-                                {
-                                    if (chestItem == 0)
+                                    int headItem = newData.GetHeadItem();
+                                    if (headItem != oldData.GetHeadItem())
                                     {
-                                        CharacterManager.Instance.UnEquipItem(obj, ItemSlot.CHEST);
+                                        if (headItem == 0)
+                                        {
+                                            CharacterManager.Instance.UnEquipItem(avatar, ItemSlot.HEAD);
+                                        }
+                                        else
+                                        {
+                                            CharacterManager.Instance.EquipItem(avatar, headItem);
+                                        }
                                     }
-                                    else
-                                    {
-                                        CharacterManager.Instance.EquipItem(obj, chestItem);
-                                    }
-                                }
 
-                                int legsItem = newData.GetLegsItem();
-                                if (legsItem != oldData.GetLegsItem())
-                                {
-                                    if (legsItem == 0)
+                                    int chestItem = newData.GetChestItem();
+                                    if (chestItem != oldData.GetChestItem())
                                     {
-                                        CharacterManager.Instance.UnEquipItem(obj, ItemSlot.LEGS);
+                                        if (chestItem == 0)
+                                        {
+                                            CharacterManager.Instance.UnEquipItem(avatar, ItemSlot.CHEST);
+                                        }
+                                        else
+                                        {
+                                            CharacterManager.Instance.EquipItem(avatar, chestItem);
+                                        }
                                     }
-                                    else
-                                    {
-                                        CharacterManager.Instance.EquipItem(obj, legsItem);
-                                    }
-                                }
 
-                                int handsItem = newData.GetHandsItem();
-                                if (handsItem != oldData.GetHandsItem())
-                                {
-                                    if (handsItem == 0)
+                                    int legsItem = newData.GetLegsItem();
+                                    if (legsItem != oldData.GetLegsItem())
                                     {
-                                        CharacterManager.Instance.UnEquipItem(obj, ItemSlot.HANDS);
+                                        if (legsItem == 0)
+                                        {
+                                            CharacterManager.Instance.UnEquipItem(avatar, ItemSlot.LEGS);
+                                        }
+                                        else
+                                        {
+                                            CharacterManager.Instance.EquipItem(avatar, legsItem);
+                                        }
                                     }
-                                    else
-                                    {
-                                        CharacterManager.Instance.EquipItem(obj, handsItem);
-                                    }
-                                }
 
-                                int feetItem = newData.GetFeetItem();
-                                if (feetItem != oldData.GetFeetItem())
-                                {
-                                    if (feetItem == 0)
+                                    int handsItem = newData.GetHandsItem();
+                                    if (handsItem != oldData.GetHandsItem())
                                     {
-                                        CharacterManager.Instance.UnEquipItem(obj, ItemSlot.FEET);
+                                        if (handsItem == 0)
+                                        {
+                                            CharacterManager.Instance.UnEquipItem(avatar, ItemSlot.HANDS);
+                                        }
+                                        else
+                                        {
+                                            CharacterManager.Instance.EquipItem(avatar, handsItem);
+                                        }
                                     }
-                                    else
-                                    {
-                                        CharacterManager.Instance.EquipItem(obj, feetItem);
-                                    }
-                                }
 
-                                int leftHandItem = newData.GetLeftHandItem();
-                                if (leftHandItem != oldData.GetLeftHandItem())
-                                {
-                                    if (leftHandItem == 0)
+                                    int feetItem = newData.GetFeetItem();
+                                    if (feetItem != oldData.GetFeetItem())
                                     {
-                                        CharacterManager.Instance.UnEquipItem(obj, ItemSlot.LEFT_HAND);
+                                        if (feetItem == 0)
+                                        {
+                                            CharacterManager.Instance.UnEquipItem(avatar, ItemSlot.FEET);
+                                        }
+                                        else
+                                        {
+                                            CharacterManager.Instance.EquipItem(avatar, feetItem);
+                                        }
                                     }
-                                    else
-                                    {
-                                        CharacterManager.Instance.EquipItem(obj, leftHandItem);
-                                    }
-                                }
 
-                                int rightHandItem = newData.GetRightHandItem();
-                                if (rightHandItem != oldData.GetRightHandItem())
-                                {
-                                    if (rightHandItem == 0)
+                                    int leftHandItem = newData.GetLeftHandItem();
+                                    if (leftHandItem != oldData.GetLeftHandItem())
                                     {
-                                        CharacterManager.Instance.UnEquipItem(obj, ItemSlot.RIGHT_HAND);
+                                        if (leftHandItem == 0)
+                                        {
+                                            CharacterManager.Instance.UnEquipItem(avatar, ItemSlot.LEFT_HAND);
+                                        }
+                                        else
+                                        {
+                                            CharacterManager.Instance.EquipItem(avatar, leftHandItem);
+                                        }
                                     }
-                                    else
-                                    {
-                                        CharacterManager.Instance.EquipItem(obj, rightHandItem);
-                                    }
-                                }
 
-                                // Update world object with new data.
-                                worldObject.SetCharacterData(newData);
+                                    int rightHandItem = newData.GetRightHandItem();
+                                    if (rightHandItem != oldData.GetRightHandItem())
+                                    {
+                                        if (rightHandItem == 0)
+                                        {
+                                            CharacterManager.Instance.UnEquipItem(avatar, ItemSlot.RIGHT_HAND);
+                                        }
+                                        else
+                                        {
+                                            CharacterManager.Instance.EquipItem(avatar, rightHandItem);
+                                        }
+                                    }
+
+                                    // Update world object with new data.
+                                    worldObject.SetCharacterData(newData);
+                                }
                             }
                         }
                     }
@@ -314,7 +319,7 @@ public class WorldManager : MonoBehaviour
         }
     }
 
-    public GameObject GetActiveCharacter()
+    public DynamicCharacterAvatar GetActiveCharacter()
     {
         return _activeCharacter;
     }

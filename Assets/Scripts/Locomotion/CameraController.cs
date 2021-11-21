@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UMA.CharacterSystem;
+using UnityEngine;
 
 /**
  * Author: Paintbrush
@@ -46,7 +47,7 @@ public class CameraController : MonoBehaviour
         // Don't do anything if target is not defined.
         if (_target == null)
         {
-            GameObject activeCharacter = WorldManager.Instance.GetActiveCharacter();
+            DynamicCharacterAvatar activeCharacter = WorldManager.Instance.GetActiveCharacter();
             if (activeCharacter != null)
             {
                 // Now we can set target.

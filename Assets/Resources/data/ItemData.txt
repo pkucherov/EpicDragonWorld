@@ -1,33 +1,8 @@
 #id;itemSlot;itemType;name;description;recipeMale;recipeFemale;prefabId;positionMale;positionFemale;rotationMale;rotationFemale;scaleMale;scaleFemale;stackable;tradable;stamina;strength;dexterity;intelect
-1;HEAD;EQUIP;Bronze Helmet;A helmet made out of bronze.;HelmMalePack1Type1a_Recipe;HelmPack1Type1a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-2;CHEST;EQUIP;Bronze Armor;An armor made out of bronze.;TorsoMalePack1Type1a_Recipe;TorsoPack1Type1a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-3;HANDS;EQUIP;Bronze Gloves;Gloves made out of bronze.;GlovesMalePack1Type1a_Recipe;GlovesPack1Type1a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-4;LEGS;EQUIP;Bronze Leggings;Leggings made out of bronze.;LegsMalePack1Type1a_Recipe;LegsPack1Type1a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-5;FEET;EQUIP;Bronze Boots;Boots made out of bronze.;BootsMalePack1Type1a_Recipe;BootsPack1Type1a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-6;HEAD;EQUIP;Scarlet Helmet;A helmet made out of bronze.;HelmMalePack1Type1b_Recipe;HelmPack1Type1b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-7;CHEST;EQUIP;Scarlet Armor;An armor made out of bronze.;TorsoMalePack1Type1b_Recipe;TorsoPack1Type1b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-8;HANDS;EQUIP;Scarlet Gloves;Gloves made out of bronze.;GlovesMalePack1Type1b_Recipe;GlovesPack1Type1b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-9;LEGS;EQUIP;Scarlet Leggings;Leggings made out of bronze.;LegsMalePack1Type1b_Recipe;LegsPack1Type1b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-10;FEET;EQUIP;Scarlet Boots;Boots made out of bronze.;BootsMalePack1Type1b_Recipe;BootsPack1Type1b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-11;HEAD;EQUIP;Refined Iron Helmet;A helmet made out of iron.;HelmMalePack1Type2a_Recipe;HelmPack1Type2a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-12;CHEST;EQUIP;Refined Iron Armor;An armor made out of iron.;TorsoMalePack1Type2a_Recipe;TorsoPack1Type2a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-13;HANDS;EQUIP;Refined Iron Gloves;Gloves made out of iron.;GlovesMalePack1Type2a_Recipe;GlovesPack1Type2a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-14;LEGS;EQUIP;Refined Iron Leggings;Leggings made out of iron.;LegsMalePack1Type2a_Recipe;LegsPack1Type2a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-15;FEET;EQUIP;Refined Iron Boots;Boots made out of iron.;BootsMalePack1Type2a_Recipe;BootsPack1Type2a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-16;HEAD;EQUIP;Onyx Helmet;A helmet made out of iron.;HelmMalePack1Type2b_Recipe;HelmPack1Type2b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-17;CHEST;EQUIP;Onyx Armor;An armor made out of iron.;TorsoMalePack1Type2b_Recipe;TorsoPack1Type2b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-18;HANDS;EQUIP;Onyx Gloves;Gloves made out of iron.;GlovesMalePack1Type2b_Recipe;GlovesPack1Type2b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-19;LEGS;EQUIP;Onyx Leggings;Leggings made out of iron.;LegsMalePack1Type2b_Recipe;LegsPack1Type2b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-20;FEET;EQUIP;Onyx Boots;Boots made out of iron.;BootsMalePack1Type2b_Recipe;BootsPack1Type2b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-21;HEAD;EQUIP;Iron Helmet;A helmet made out of iron.;HelmMalePack1Type3a_Recipe;HelmPack1Type3a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-22;CHEST;EQUIP;Iron Armor;An armor made out of iron.;TorsoMalePack1Type3a_Recipe;TorsoPack1Type3a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-23;HANDS;EQUIP;Iron Gloves;Gloves made out of iron.;GlovesMalePack1Type3a_Recipe;GlovesPack1Type3a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-24;LEGS;EQUIP;Iron Leggings;Leggings made out of iron.;LegsMalePack1Type3a_Recipe;LegsPack1Type3a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-25;FEET;EQUIP;Iron Boots;Boots made out of iron.;BootsMalePack1Type3a_Recipe;BootsPack1Type3a_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-26;HEAD;EQUIP;Alabaster Helmet;A helmet made out of iron.;HelmMalePack1Type3b_Recipe;HelmPack1Type3b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-27;CHEST;EQUIP;Alabaster Armor;An armor made out of iron.;TorsoMalePack1Type3b_Recipe;TorsoPack1Type3b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-28;HANDS;EQUIP;Alabaster Gloves;Gloves made out of iron.;GlovesMalePack1Type3b_Recipe;GlovesPack1Type3b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-29;LEGS;EQUIP;Alabaster Leggings;Leggings made out of iron.;LegsMalePack1Type3b_Recipe;LegsPack1Type3b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-30;FEET;EQUIP;Alabaster Boots;Boots made out of iron.;BootsMalePack1Type3b_Recipe;BootsPack1Type3b_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+1;HEAD;EQUIP;Chainmail Helmet;A helmet made out of steel.;HelmetChainmailM_Recipe;HelmetChainmailF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+2;CHEST;EQUIP;Steel Harnish;An armor made out of steel.;SimpleHarnishM_Recipe;SimpleHarnishF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+3;HANDS;EQUIP;Steel Gauntlets;Gloves made out of steel.;GauntletSteelSimpleM_Recipe;GauntletSteelSimpleF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+4;LEGS;EQUIP;Steel Leggings;Leggings made out of steel.;SteelLegginsSimpleM_Recipe;SteelLegginsSimpleF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+5;FEET;EQUIP;Steel Boots;Boots made out of steel.;SteelBootsM_Recipe;SteelBootsF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
 31;RIGHT_HAND;EQUIP;Test Sword Right;Sword of thunder.;;;0;-0.09,-0.24,-0.09;-0.09,-0.24,-0.09;12.738,-5.85,-0;12.738,-5.85,-0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
 32;LEFT_HAND;EQUIP;Test Sword Left;Sword of lightning.;;;0;-0.1,0.3,-0.102;-0.1,0.3,-0.102;-12.738,-5.85,182.189;-12.738,-5.85,182.189;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0

@@ -584,7 +584,7 @@ MonoBehaviour:
   m_LastFolders:
   - Assets/Scripts/Scenes/World
   m_LastFoldersGridSize: -1
-  m_LastProjectPath: C:\EpicDragonWorld
+  m_LastProjectPath: C:\EpicDragonWorldClient
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:

@@ -8,6 +8,7 @@ Game client that connects with JMMOS.
 - Packet communication.
 - Music manager.
 - Server authentication.
+- Support for UMA.
 - Character management.
 - Broadcast game object movement.
 - Chat and messaging.
