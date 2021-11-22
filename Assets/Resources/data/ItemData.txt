@@ -1,8 +1,67 @@
 #id;itemSlot;itemType;name;description;recipeMale;recipeFemale;prefabId;positionMale;positionFemale;rotationMale;rotationFemale;scaleMale;scaleFemale;stackable;tradable;stamina;strength;dexterity;intelect
-1;HEAD;EQUIP;Chainmail Helmet;A helmet made out of steel.;HelmetChainmailM_Recipe;HelmetChainmailF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-2;CHEST;EQUIP;Steel Harnish;An armor made out of steel.;SimpleHarnishM_Recipe;SimpleHarnishF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-3;HANDS;EQUIP;Steel Gauntlets;Gloves made out of steel.;GauntletSteelSimpleM_Recipe;GauntletSteelSimpleF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-4;LEGS;EQUIP;Steel Leggings;Leggings made out of steel.;SteelLegginsSimpleM_Recipe;SteelLegginsSimpleF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-5;FEET;EQUIP;Steel Boots;Boots made out of steel.;SteelBootsM_Recipe;SteelBootsF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-31;RIGHT_HAND;EQUIP;Test Sword Right;Sword of thunder.;;;0;-0.09,-0.24,-0.09;-0.09,-0.24,-0.09;12.738,-5.85,-0;12.738,-5.85,-0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
-32;LEFT_HAND;EQUIP;Test Sword Left;Sword of lightning.;;;0;-0.1,0.3,-0.102;-0.1,0.3,-0.102;-12.738,-5.85,182.189;-12.738,-5.85,182.189;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+1;HEAD;EQUIP;Mage Hat;This is a helmet;HatWitchColorfulM_Recipe;HatWitchColorfulF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+2;CHEST;EQUIP;Mage Robe;This is a chestpiece;RobeMageSashBlueM_Recipe;RobeMageSashBlueF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+5;FEET;EQUIP;Mage Buckled Boots;These are boots and shoes;BootsBuckledM_Recipe;BootsBuckledF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+7;CHEST;EQUIP;Waitress Dress;This is a chestpiece;DressGreyApronM_Recipe;DressGreyApronF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+10;FEET;EQUIP;Elegant Dress Shoes;These are boots and shoes;ShoesSideOverlaySturdyM_Recipe;ShoesSideOverlaySturdyF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+11;HEAD;EQUIP;Elegant Black Hat;This is a helmet;HatZylinderBlackM_Recipe;HatZylinderBlackF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+12;CHEST;EQUIP;Elegant White Shirt;This is a chestpiece;ShirtButtonDownWhiteM_Recipe;ShirtButtonDownWhiteF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+13;HANDS;EQUIP;Elegant White Gloves;These are gloves;GlovesLinenWhiteM_Recipe;GlovesLinenWhiteF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+14;LEGS;EQUIP;Elegant Kickerbockers;These are pants;KnickerbockerBlackM_Recipe;KnickerbockerBlackF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+15;FEET;EQUIP;Elegant Dress Shoes;These are boots and shoes;SchoesLaceUpBlackM_Recipe;SchoesLaceUpBlackF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+17;CHEST;EQUIP;Patched Fabric Shirt;This is a chestpiece;ShirtLacedLinenM_Recipe;ShirtLacedLinenF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+18;HANDS;EQUIP;Patched Fabric Gloves;These are gloves;GlovesLinenM_Recipe;GlovesLinenF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+19;LEGS;EQUIP;Patched Fabric Leggings;These are pants;TrousersBeltPatchedM_Recipe;TrousersBeltPatchedF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+20;FEET;EQUIP;Patched Fabric Shoes;These are boots and shoes;ShoesSideOverlaySturdyM_Recipe;ShoesSideOverlaySturdyF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+21;HEAD;EQUIP;Dark Armor Helmet;This is a helmet;HelmetRoundDarkNeckNoseM_Recipe;HelmetRoundDarkNeckNoseF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+22;CHEST;EQUIP;Dark Armor Chestplate;This is a chestpiece;GambesonMaxDarkM_Recipe;GambesonMaxDarkF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+23;HANDS;EQUIP;Dark Armor Gauntlets;These are gloves;GlovesLongDarkArmorM_Recipe;GlovesLongDarkArmorF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+24;LEGS;EQUIP;Dark Armor Grieves;These are pants;LegArmorDarkM_Recipe;LegArmorDarkF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+25;FEET;EQUIP;Dark Armor Boots;These are boots and shoes;BootsSteelBaseDarkM_Recipe;BootsSteelBaseDarkF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+27;CHEST;EQUIP;Monk Shirt;This is a chestpiece;RobeRawRopeM_Recipe;RobeRawRopeF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+32;CHEST;EQUIP;Nun Shirt;This is a chestpiece;RobeWhiteBlackBeltM_Recipe;RobeWhiteBlackBeltF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+35;FEET;EQUIP;Nun Shoes;These are boots and shoes;SchoesLaceUpBlackM_Recipe;SchoesLaceUpBlackF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+36;HEAD;EQUIP;Chainmail Hauberk Helmet;This is a helmet;HelmetChainmailM_Recipe;HelmetChainmailF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+37;CHEST;EQUIP;Chainmail Hauberk Chestplate;This is a chestpiece;HauberkM_Recipe;HauberkF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+38;HANDS;EQUIP;Chainmail Hauberk Gauntlets;These are gloves;GlovesLongSturdyLeatherGauntletM_Recipe;GlovesLongSturdyLeatherGauntletF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+39;LEGS;EQUIP;Chainmail Hauberk Grieves;These are pants;TrousersBeltLinenM_Recipe;TrousersBeltLinenF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+40;FEET;EQUIP;Chainmail Hauberk Boots;These are boots and shoes;ShoesProtectedM_Recipe;ShoesProtectedF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+41;HEAD;EQUIP;Simple Leather Helmet;This is a helmet;HatSteelDarkM_Recipe;HatSteelDarkF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+42;CHEST;EQUIP;Simple Leather Chestplate;This is a chestpiece;BodyArmorLeatherM_Recipe;BodyArmorLeatherF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+43;HANDS;EQUIP;Simple Leather Gauntlets;These are gloves;GlovesLongSturdyLeatherM_Recipe;GlovesLongSturdyLeatherF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+44;LEGS;EQUIP;Simple Leather Grieves;These are pants;LegArmorLeatherM_Recipe;LegArmorLeatherF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+45;FEET;EQUIP;Simple Leather Boots;These are boots and shoes;JackbootsM_Recipe;JackbootsF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+47;CHEST;EQUIP;Simple Fabric Shirt;This is a chestpiece;ShirtButtonDownLinenM_Recipe;ShirtButtonDownLinenF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+49;LEGS;EQUIP;Simple Fabric Leggings;These are pants;TrousersTiedGreenM_Recipe;TrousersTiedGreenF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+50;FEET;EQUIP;Simple Fabric Shoes;These are boots and shoes;BootsLacedHardBrownM_Recipe;BootsLacedHardBrownF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+52;CHEST;EQUIP;Miner Shirt;This is a chestpiece;ShirtLacedRoughM_Recipe;ShirtLacedRoughF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+53;HANDS;EQUIP;Miner Gloves;These are gloves;GlovesSturdyLeatherM_Recipe;GlovesSturdyLeatherF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+54;LEGS;EQUIP;Miner Leggings;These are pants;MinerTrousersM_Recipe;MinerTrousersF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+55;FEET;EQUIP;Miner Shoes;These are boots and shoes;DiceShakerM_Recipe;DiceShakerF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+56;HEAD;EQUIP;Druid Hat;This is a helmet;HatLeatherM_Recipe;HatLeatherF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+57;CHEST;EQUIP;Druid Shirt;This is a chestpiece;RobeGreenApplicationBeltM_Recipe;RobeGreenApplicationBeltF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+60;FEET;EQUIP;Druid Shoes;These are boots and shoes;ShoesSideOverlaySoftM_Recipe;ShoesSideOverlaySoftF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+61;HEAD;EQUIP;Simple Steel Helmet;This is a helmet;HelmetCockscombBrightM_Recipe;HelmetCockscombBrightF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+62;CHEST;EQUIP;Simple Steel Chestplate;This is a chestpiece;SimpleHarnishM_Recipe;SimpleHarnishF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+63;HANDS;EQUIP;Simple Steel Gauntlets;These are gloves;GauntletSteelSimpleM_Recipe;GauntletSteelSimpleF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+64;LEGS;EQUIP;Simple Steel Grieves;These are pants;SteelLegginsSimpleM_Recipe;SteelLegginsSimpleF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+65;FEET;EQUIP;Simple Steel Boots;These are boots and shoes;SteelBootsM_Recipe;SteelBootsF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+66;HEAD;EQUIP;Advanced Leather Helmet;This is a helmet;HelmetLeatherM_Recipe;HelmetLeatherF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+67;CHEST;EQUIP;Advanced Leather Chestplate;This is a chestpiece;BodyArmorLeatherAdvancedM_Recipe;BodyArmorLeatherAdvancedF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+68;HANDS;EQUIP;Advanced Leather Gauntlets;These are gloves;GlovesLongArmoredM_Recipe;GlovesLongArmoredF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+69;LEGS;EQUIP;Advanced Leather Grieves;These are pants;LegArmorLeatherAdvancedM_Recipe;LegArmorLeatherAdvancedF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+70;FEET;EQUIP;Advanced Leather Boots;These are boots and shoes;BootsArmoredM_Recipe;BootsArmoredF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+71;HEAD;EQUIP;Parade Helmet;This is a helmet;HelmetCockscombParadeNoseWideMouthM_Recipe;HelmetCockscombParadeNoseWideMouthF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+72;CHEST;EQUIP;Parade Chestplate;This is a chestpiece;HauberkMaxParadeM_Recipe;HauberkMaxParadeF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+73;HANDS;EQUIP;Parade Gauntlets;These are gloves;GlovesLongParadeM_Recipe;GlovesLongParadeF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+74;LEGS;EQUIP;Parade Grieves;These are pants;LegArmorFullParadeM_Recipe;LegArmorFullParadeF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+75;FEET;EQUIP;Parade Boots;These are boots and shoes;BootsSteelParadeM_Recipe;BootsSteelParadeF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+77;CHEST;EQUIP;Leather Cloth Shirt;This is a chestpiece;ShirtLeatherOrnatedM_Recipe;ShirtLeatherOrnatedF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+78;HANDS;EQUIP;Leather Cloth Gloves;These are gloves;GlovesSoftLeatherM_Recipe;GlovesSoftLeatherF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+79;LEGS;EQUIP;Leather Cloth Leggings;These are pants;TrousersLeatherM_Recipe;TrousersLeatherF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+80;FEET;EQUIP;Leather Cloth Shoes;These are boots and shoes;BootsLacedSoftYellowM_Recipe;BootsLacedSoftYellowF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+82;CHEST;EQUIP;Smith Shirt;This is a chestpiece;SmithApronM_Recipe;SmithApronF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+84;LEGS;EQUIP;Smith Leggings;These are pants;TrousersRoughM_Recipe;TrousersRoughF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+85;FEET;EQUIP;Smith Shoes;These are boots and shoes;SchoesLaceUpCapBrownM_Recipe;SchoesLaceUpCapBrownF_Recipe;-1;0,0,0;0,0,0;0,0,0;0,0,0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+86;RIGHT_HAND;EQUIP;Test Sword Right;Sword of thunder.;   ;   ;0;-0.09,-0.24,-0.09;-0.09,-0.24,-0.09;12.738,-5.85,-0;12.738,-5.85,-0;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
+87;LEFT_HAND;EQUIP;Test Sword Left;Sword of lightning.;   ;   ;0;-0.1,0.3,-0.102;-0.1,0.3,-0.102;-12.738,-5.85,182.189;-12.738,-5.85,182.189;1,1,1;1,1,1;FALSE;FALSE;0;0;0;0
