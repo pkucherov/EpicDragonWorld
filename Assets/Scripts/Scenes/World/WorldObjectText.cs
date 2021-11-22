@@ -7,14 +7,15 @@ using UnityEngine;
  */
 public class WorldObjectText : MonoBehaviour
 {
-    public static Color32 DEFAULT_COLOR = new Color32(0, 255, 0, 255);
+    public static Color32 DEFAULT_COLOR_NPC = new Color32(0, 255, 0, 255);
+    public static Color32 DEFAULT_COLOR_MONSTER = new Color32(255, 0, 0, 255);
     public static Color32 SELECTED_COLOR = new Color32(0, 128, 128, 255);
 
     private GameObject _attachedObject;
     private WorldObject _worldObject;
     private TextMeshPro _nameMesh;
     private string _worldObjectName = "";
-    private Color32 _currentColor = DEFAULT_COLOR;
+    private Color32 _currentColor = DEFAULT_COLOR_NPC;
 
     private float _currentHeight;
     private int _raceId;
@@ -56,10 +57,17 @@ public class WorldObjectText : MonoBehaviour
         {
             case 0:
                 _currentHeight = 1f;
+                _nameMesh.color = _currentColor;
                 break;
 
             case 1:
                 _currentHeight = 0.85f;
+                _nameMesh.color = _currentColor;
+                break;
+
+            case 2:
+                _currentHeight = 1f;
+                _nameMesh.color = DEFAULT_COLOR_MONSTER;
                 break;
         }
 
@@ -69,7 +77,6 @@ public class WorldObjectText : MonoBehaviour
             _currentHeight -= 0.3f;
         }
 
-        _nameMesh.color = _currentColor;
         _nameMesh.text = _worldObjectName;
         _nameMesh.transform.position = new Vector3(_attachedObject.transform.position.x, _attachedObject.transform.position.y + _attachedObject.transform.lossyScale.y + _currentHeight, _attachedObject.transform.position.z);
         _nameMesh.transform.LookAt(CameraController.Instance.transform.position);

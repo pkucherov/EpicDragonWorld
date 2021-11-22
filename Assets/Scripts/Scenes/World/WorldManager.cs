@@ -454,7 +454,7 @@ public class WorldManager : MonoBehaviour
             WorldObjectText previousObjectText = _targetWorldObject.GetComponentInParent<WorldObjectText>();
             if (previousObjectText != null)
             {
-                previousObjectText.SetCurrentColor(WorldObjectText.DEFAULT_COLOR);
+                previousObjectText.SetCurrentColor(WorldObjectText.DEFAULT_COLOR_NPC);
             }
         }
 

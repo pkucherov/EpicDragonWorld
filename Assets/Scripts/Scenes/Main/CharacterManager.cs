@@ -15,6 +15,7 @@ public class CharacterManager : MonoBehaviour
 
     public DynamicCharacterAvatar _avatarMale;
     public DynamicCharacterAvatar _avatarFemale;
+    public DynamicCharacterAvatar _avatarWerewolf;
     public List<string> _hairModelsMale = new List<string>();
     public List<string> _hairModelsFemale = new List<string>();
 
@@ -82,7 +83,30 @@ public class CharacterManager : MonoBehaviour
     {
         // Setting race on Instantiate, because even we set it at CustomizeCharacterAppearance, we could not mount items for female characters.
         Vector3 newPosition = new Vector3(posX, posY, posZ);
-        DynamicCharacterAvatar avatarTemplate = characterData.GetRace() == 0 ? _avatarMale : _avatarFemale;
+
+        // Switch character race.
+        DynamicCharacterAvatar avatarTemplate = null;
+        switch (characterData.GetRace())
+        {
+            case 0:
+                avatarTemplate = _avatarMale;
+                break;
+
+            case 1:
+                avatarTemplate = _avatarFemale;
+                break;
+
+            case 2:
+                avatarTemplate = _avatarWerewolf;
+                break;
+        }
+
+        // Unknown race template. This should not happen.
+        if (avatarTemplate == null)
+        {
+            return null;
+        }
+
         DynamicCharacterAvatar newAvatar = Instantiate(avatarTemplate, newPosition, Quaternion.identity) as DynamicCharacterAvatar;
 
         // Set heading early, to avoid inconsistencies with template heading that are
@@ -121,24 +145,29 @@ public class CharacterManager : MonoBehaviour
         newAvatar.gameObject.SetActive(true);
 
         // Customize character.
-        int hairType = characterData.GetHairType();
-        if (characterData.GetRace() == 0)
+        switch (characterData.GetRace())
         {
-            newAvatar.ChangeRace("HumanMaleDCS");
-            if (hairType != 0)
-            {
-                newAvatar.SetSlot("Hair", _hairModelsMale[characterData.GetHairType()]);
+            case 0:
+                newAvatar.ChangeRace("HumanMaleDCS");
                 newAvatar.SetSlot("Underwear", "MaleUnderwear");
-            }
-        }
-        if (characterData.GetRace() == 1)
-        {
-            newAvatar.ChangeRace("HumanFemaleDCS");
-            if (hairType != 0)
-            {
-                newAvatar.SetSlot("Hair", _hairModelsFemale[characterData.GetHairType()]);
+                if (characterData.GetHairType() != 0)
+                {
+                    newAvatar.SetSlot("Hair", _hairModelsMale[characterData.GetHairType()]);
+                }
+                break;
+
+            case 1:
+                newAvatar.ChangeRace("HumanFemaleDCS");
                 newAvatar.SetSlot("Underwear", "FemaleUndies2");
-            }
+                if (characterData.GetHairType() != 0)
+                {
+                    newAvatar.SetSlot("Hair", _hairModelsFemale[characterData.GetHairType()]);
+                }
+                break;
+
+            case 2:
+                newAvatar.ChangeRace("Werewolf");
+                break;
         }
 
         // Set colors.
