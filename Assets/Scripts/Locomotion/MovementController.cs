@@ -157,6 +157,32 @@ public class MovementController : MonoBehaviour
             {
                 _rightSideMovement = false;
             }
+
+            // Front - Left.
+            if (InputManager.UP_PRESS && InputManager.LEFT_PRESS)
+            {
+                SetPlayerRotationWithLerp(CameraController.Instance.transform.rotation.eulerAngles.y - 45);
+            }
+
+            // Front - Right.
+            if (InputManager.UP_PRESS && InputManager.RIGHT_PRESS)
+            {
+                SetPlayerRotationWithLerp(CameraController.Instance.transform.rotation.eulerAngles.y + 45);
+            }
+
+            // Back - Left.
+            if (InputManager.DOWN_PRESS && InputManager.LEFT_PRESS)
+            {
+                transform.localPosition -= transform.forward * (_speedCurrent * 0.66f) * Time.deltaTime;
+                SetPlayerRotationWithLerp(CameraController.Instance.transform.rotation.eulerAngles.y + 45);
+            }
+
+            // Back - Right.
+            if (InputManager.DOWN_PRESS && InputManager.RIGHT_PRESS)
+            {
+                transform.localPosition -= transform.forward * (_speedCurrent * 0.66f) * Time.deltaTime;
+                SetPlayerRotationWithLerp(CameraController.Instance.transform.rotation.eulerAngles.y - 45);
+            }
         }
 
         // Send changes to network.
@@ -187,7 +213,7 @@ public class MovementController : MonoBehaviour
         Vector3 curvAngle = newHeading.eulerAngles;
         curvAngle.y = newRotation;
         newHeading.eulerAngles = curvAngle;
-        transform.localRotation = Quaternion.Lerp(oldHeading, newHeading, Time.deltaTime * 10);
+        transform.localRotation = Quaternion.Lerp(oldHeading, newHeading, Time.deltaTime * 5);
     }
 
     private void OnTriggerEnter(Collider other)
